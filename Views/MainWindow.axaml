@@ -15,6 +15,18 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Commit.CommitMessage}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <Grid RowDefinitions="Auto, *, Auto"
+    x:Name="Root">
+        <ScrollViewer Grid.Row="1">
+            <!-- This ItemsControl show all added ToDoItems. -->
+            <!-- It needs to be placed inside a ScrollViewer because other than a ListBox it has not its own -->
+            <ItemsControl ItemsSource="{Binding Commits}">
+                <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding CommitMessage}"/>
+                </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
 </Window>
