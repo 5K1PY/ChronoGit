@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChronoGit.ViewModels"
+             xmlns:m="using:ChronoGit.Models"
+             x:Class="ChronoGit.Views.PickView"
+             x:DataType="vm:PickViewModel">
+
+    <StackPanel>
+        <TextBlock Text="{Binding MessageShort}"/>
+    </StackPanel>
+</UserControl>
