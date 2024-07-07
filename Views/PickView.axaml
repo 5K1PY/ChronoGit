@@ -5,7 +5,18 @@
              x:Class="ChronoGit.Views.PickView"
              x:DataType="vm:PickViewModel">
 
-    <StackPanel>
-        <TextBlock Text="{Binding MessageShort}"/>
-    </StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Id}"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding MessageShort}"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding Author}"/>
+    </Grid>
 </UserControl>
