@@ -28,8 +28,4 @@ navíc nabídne pohodlnější globální operace.
 
 ## Features pokročilého C#
 
-Jednotlivé akce dává smysl reprezentovat pomocí seznamu příkazů.
-Nicméně na různých příkazech dává smysl provádět úplně různé věci
-na stejnou klávesovou zkratku. Např.:
-- U `pick` chceme změnit název commitu, u `exec` změnit spouštěný příkaz.
-- `pick` chceme změnit na `drop`, zatímco `break` chceme úplně smazat.
+Vláknování, aby potenciálně pomalé operace s gitem neblokovaly okno.
