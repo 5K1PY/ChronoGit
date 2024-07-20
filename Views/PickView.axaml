@@ -7,6 +7,8 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
@@ -15,8 +17,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Id}"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding MessageShort}"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding Author}"/>
+        <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Width="60" Height="60" Path="/Assets/pick_red.svg"/>
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Id}"/>
+        <TextBlock Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Text="{Binding MessageShort}" FontSize="16"/>
+        <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" Text="{Binding Author}"/>
     </Grid>
 </UserControl>
