@@ -2,11 +2,17 @@ using ReactiveUI;
 using LibGit2Sharp;
 using ChronoGit.Models;
 using System;
+using Avalonia.Media;
 
 namespace ChronoGit.ViewModels;
 
 public abstract partial class CommandViewModel : ViewModelBase {
-
+    private bool _selected = false;
+    public bool Selected {
+        get => _selected;
+        set => this.RaiseAndSetIfChanged(ref _selected, value);
+    }
+    public IBrush BackgroundColor => Selected ? Brushes.LightYellow : Brushes.White;
 }
 
 public abstract partial class CommitCommandViewModel : CommandViewModel {

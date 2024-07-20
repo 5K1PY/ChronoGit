@@ -16,6 +16,11 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Up"   Command="{Binding UpArrowPressed}" />
+        <KeyBinding Gesture="Down" Command="{Binding DownArrowPressed}" />
+    </Window.KeyBindings>
+
     <Grid RowDefinitions="Auto, *, Auto"
     x:Name="Root">
         <ScrollViewer Grid.Row="1">

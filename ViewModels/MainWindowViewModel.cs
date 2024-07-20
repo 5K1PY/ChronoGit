@@ -1,12 +1,10 @@
-﻿using ReactiveUI;
+using ReactiveUI;
 using ChronoGit.Models;
 using System.Collections.ObjectModel;
-using ChronoGit.Views;
 
 namespace ChronoGit.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
-{
+public class MainWindowViewModel : ViewModelBase {
     private ObservableCollection<CommandViewModel> _actions;
     public ObservableCollection<CommandViewModel> Actions
     {
@@ -18,6 +16,25 @@ public class MainWindowViewModel : ViewModelBase
         _actions = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
             _actions.Add(new PickViewModel(action));
+        }
+        _actions[0].Selected = true;
+    }
+
+    public int Selected = 0;
+
+    public void UpArrowPressed() {
+        if (Selected - 1 >= 0) {
+            Actions[Selected].Selected = false;
+            Selected--;
+            Actions[Selected].Selected = true;
+        }
+    }
+
+    public void DownArrowPressed() {
+        if (Selected + 1 < Actions.Count) {
+            Actions[Selected].Selected = false;
+            Selected++;
+            Actions[Selected].Selected = true;
         }
     }
 }
