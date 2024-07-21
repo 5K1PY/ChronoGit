@@ -17,12 +17,13 @@
     </Design.DataContext>
 
     <Window.KeyBindings>
-        <KeyBinding Gesture="Up"   Command="{Binding UpArrowPressed}" />
+        <KeyBinding Gesture="Escape" Command="{Binding EscPressed}" />
+        <KeyBinding Gesture="Up" Command="{Binding UpArrowPressed}" />
         <KeyBinding Gesture="Down" Command="{Binding DownArrowPressed}" />
-        <KeyBinding Gesture="E"    Command="{Binding EPressed}" />
-        <KeyBinding Gesture="P"    Command="{Binding PPressed}" />
-        <KeyBinding Gesture="R"    Command="{Binding RPressed}" />
-        <KeyBinding Gesture="V"    Command="{Binding VPressed}" />
+        <KeyBinding Gesture="E" Command="{Binding EPressed}" />
+        <KeyBinding Gesture="P" Command="{Binding PPressed}" />
+        <KeyBinding Gesture="R" Command="{Binding RPressed}" />
+        <KeyBinding Gesture="V" Command="{Binding VPressed}" />
     </Window.KeyBindings>
 
     <Grid RowDefinitions="Auto, *, Auto"

@@ -80,6 +80,12 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
+    // Modes
+
+    public void EscPressed() {
+        ExitVisualMode();
+    }
+
     public void VPressed() {
         if (CurrentMode == Mode.NormalMode) {
             CurrentMode = Mode.VisualMode;
@@ -88,6 +94,8 @@ public class MainWindowViewModel : ViewModelBase {
             ExitVisualMode();
         }
     }
+
+    // Conversions
 
     public void EPressed() {
         ConvertCommitCommands(CommitCommandConversions.ToEdit);
