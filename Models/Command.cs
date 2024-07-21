@@ -35,7 +35,7 @@ public sealed class DropCommand(Commit commit) : CommitCommand {
 }
 
 public sealed class LabelCommand(string label) : Command {
-    public string Label { get; set; } = label;
+    public string Label = label;
 }
 
 public sealed class ResetCommand(string label) {

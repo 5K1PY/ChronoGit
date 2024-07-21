@@ -8,7 +8,8 @@
         x:Class="ChronoGit.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="ChronoGit">
+        Title="ChronoGit"
+        KeyDown="WindowKeyDown">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -37,12 +38,7 @@
         <ScrollViewer Grid.Row="1">
             <!-- This ItemsControl show all added ToDoItems. -->
             <!-- It needs to be placed inside a ScrollViewer because other than a ListBox it has not its own -->
-            <ItemsControl ItemsSource="{Binding Commands}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+            <ItemsControl Name="CommandsView" ItemsSource="{Binding Commands}">
             </ItemsControl>
         </ScrollViewer>
     </Grid>

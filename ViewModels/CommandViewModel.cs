@@ -56,7 +56,10 @@ public sealed partial class FixupViewModel(FixupCommand fixup) : CommitCommandVi
 public sealed partial class LabelViewModel(LabelCommand label) : CommandViewModel {
     protected internal override Command Command { get; set; } = label;
     internal LabelCommand LabelCommand => (LabelCommand) Command;
-    public string Label => LabelCommand.Label;
+    public string Label {
+        get => LabelCommand.Label;
+        set => this.RaiseAndSetIfChanged(ref LabelCommand.Label, value);
+    }
 }
 
 public static class CommitCommandConversions {

@@ -174,6 +174,6 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     public void LPressed() {
-        Insert(new LabelViewModel(new LabelCommand("TODO")));
+        Insert(new LabelViewModel(new LabelCommand("")));
     }
 }
