@@ -2,6 +2,7 @@ using ReactiveUI;
 using ChronoGit.Models;
 using System.Collections.ObjectModel;
 using System;
+using System.Collections.Generic;
 
 namespace ChronoGit.ViewModels;
 
@@ -29,6 +30,15 @@ public class MainWindowViewModel : ViewModelBase {
     public Mode CurrentMode { get; private set; } = Mode.NormalMode;
     public int CurrentPosition { get; private set; } = 0;
     public int VisualModeStartPosition { get; private set; } = 0;
+    private IEnumerable<int> SelectedRange() {
+        if (CurrentMode == Mode.NormalMode) {
+            yield return CurrentPosition;
+        } else if (CurrentMode == Mode.VisualMode) {
+            for (int i = Math.Min(CurrentPosition, VisualModeStartPosition); i <= Math.Max(CurrentPosition, VisualModeStartPosition); i++) {
+                yield return i;
+            }
+        }
+    }
 
     public void UpArrowPressed() {
         if (CurrentPosition - 1 < 0) return;
@@ -55,11 +65,20 @@ public class MainWindowViewModel : ViewModelBase {
             CurrentMode = Mode.VisualMode;
             VisualModeStartPosition = CurrentPosition;
         } else {
-            for (int i = Math.Min(CurrentPosition, VisualModeStartPosition); i <= Math.Max(CurrentPosition, VisualModeStartPosition); i++) {
+            foreach (int i in SelectedRange()) {
                 Actions[i].Selected = false;
             }
             Actions[CurrentPosition].Selected = true;
             CurrentMode = Mode.NormalMode;
+        }
+    }
+
+    public void RPressed() {
+        foreach (int pos in SelectedRange()) {
+            CommitCommandViewModel? ccvm = Actions[pos] as CommitCommandViewModel;
+            if (ccvm != null) {
+                Actions[pos] = ccvm.ToReword().AsSelected();
+            }
         }
     }
 }

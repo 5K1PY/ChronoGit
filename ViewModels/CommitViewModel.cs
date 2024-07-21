@@ -12,11 +12,14 @@ public abstract partial class CommandViewModel : ViewModelBase {
         get => _selected;
         set => this.RaiseAndSetIfChanged(ref _selected, value);
     }
-    public IBrush BackgroundColor => Selected ? Brushes.LightYellow : Brushes.White;
+    public CommandViewModel AsSelected() {
+        Selected = true;
+        return this;
+    }
 }
 
 public abstract partial class CommitCommandViewModel : CommandViewModel {
-    protected abstract CommitCommand commitCommand { get; set; }
+    protected internal abstract CommitCommand commitCommand { get; set; }
     public string Id => commitCommand.CommandCommit.Id.ToString().Substring(0, 7);
     public string Message => commitCommand.CommandCommit.Message;
     public string MessageShort => commitCommand.CommandCommit.MessageShort;
@@ -29,9 +32,40 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
 }
 
 public sealed partial class PickViewModel : CommitCommandViewModel {
-    protected override CommitCommand commitCommand { get; set; }
+    protected internal override CommitCommand commitCommand { get; set; }
 
     public PickViewModel(PickCommand pick) {
         commitCommand = pick;
+    }
+}
+
+public sealed partial class RewordViewModel : CommitCommandViewModel {
+    protected internal override CommitCommand commitCommand { get; set; }
+    public RewordViewModel(RewordCommand squash) {
+        commitCommand = squash;
+    }
+}
+
+public sealed partial class SquashViewModel : CommitCommandViewModel {
+    protected internal override CommitCommand commitCommand { get; set; }
+    public SquashViewModel(SquashCommand squash) {
+        commitCommand = squash;
+    }
+}
+
+public sealed partial class FixupViewModel : CommitCommandViewModel {
+    protected internal override CommitCommand commitCommand { get; set; }
+    public FixupViewModel(FixupCommand fixup) {
+        commitCommand = fixup;
+    }
+}
+
+public static class CommitCommandConversions {
+    public static PickViewModel ToPick(this CommitCommandViewModel ccvm) {
+        return new PickViewModel(new PickCommand(ccvm.commitCommand.CommandCommit));
+    }
+
+    public static RewordViewModel ToReword(this CommitCommandViewModel ccvm) {
+        return new RewordViewModel(new RewordCommand(ccvm.commitCommand.CommandCommit));
     }
 }
