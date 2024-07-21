@@ -79,4 +79,12 @@ public static class CommitCommandConversions {
     public static EditViewModel ToEdit(this CommitCommandViewModel ccvm) {
         return new EditViewModel(new EditCommand(ccvm.commitCommand.CommandCommit));
     }
+
+    public static SquashViewModel ToSquash(this CommitCommandViewModel ccvm) {
+        return new SquashViewModel(new SquashCommand(ccvm.commitCommand.CommandCommit));
+    }
+
+    public static FixupViewModel ToFixup(this CommitCommandViewModel ccvm) {
+        return new FixupViewModel(new FixupCommand(ccvm.commitCommand.CommandCommit));
+    }
 }

@@ -119,8 +119,8 @@ public class MainWindowViewModel : ViewModelBase {
         ExitVisualMode();
     }
 
-    public void RPressed() {
-        ConvertCommitCommands(CommitCommandConversions.ToReword);
+    public void FPressed() {
+        ConvertCommitCommands(CommitCommandConversions.ToFixup);
         ExitVisualMode();
     }
 
@@ -128,4 +128,15 @@ public class MainWindowViewModel : ViewModelBase {
         ConvertCommitCommands(CommitCommandConversions.ToPick);
         ExitVisualMode();
     }
+
+    public void RPressed() {
+        ConvertCommitCommands(CommitCommandConversions.ToReword);
+        ExitVisualMode();
+    }
+
+    public void SPressed() {
+        ConvertCommitCommands(CommitCommandConversions.ToSquash);
+        ExitVisualMode();
+    }
+
 }
