@@ -17,22 +17,6 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Window.KeyBindings>
-        <KeyBinding Gesture="Escape" Command="{Binding EscPressed}" />
-        <KeyBinding Gesture="Delete" Command="{Binding DeletePressed}" />
-        <KeyBinding Gesture="Up" Command="{Binding UpArrowPressed}" />
-        <KeyBinding Gesture="Down" Command="{Binding DownArrowPressed}" />
-        <KeyBinding Gesture="Ctrl+Up" Command="{Binding ControlUpArrowPressed}" />
-        <KeyBinding Gesture="Ctrl+Down" Command="{Binding ControlDownArrowPressed}" />
-        <KeyBinding Gesture="E" Command="{Binding EPressed}" />
-        <KeyBinding Gesture="F" Command="{Binding FPressed}" />
-        <KeyBinding Gesture="L" Command="{Binding LPressed}" />
-        <KeyBinding Gesture="P" Command="{Binding PPressed}" />
-        <KeyBinding Gesture="R" Command="{Binding RPressed}" />
-        <KeyBinding Gesture="S" Command="{Binding SPressed}" />
-        <KeyBinding Gesture="V" Command="{Binding VPressed}" />
-    </Window.KeyBindings>
-
     <Grid RowDefinitions="Auto, *, Auto"
     x:Name="Root">
         <ScrollViewer Grid.Row="1">

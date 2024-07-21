@@ -9,6 +9,7 @@ namespace ChronoGit.ViewModels;
 
 public enum Mode {
     NormalMode,
+    InsertMode,
     VisualMode
 };
 
@@ -33,7 +34,7 @@ public class MainWindowViewModel : ViewModelBase {
     public int VisualModeStartPosition { get; private set; } = 0;
 
     private int SelectedStart() {
-        if (CurrentMode == Mode.NormalMode) {
+        if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
             return CurrentPosition;
         } else if (CurrentMode == Mode.VisualMode) {
             return Math.Min(CurrentPosition, VisualModeStartPosition);
@@ -42,7 +43,7 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     private int SelectedEnd() {
-        if (CurrentMode == Mode.NormalMode) {
+        if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
             return CurrentPosition;
         } else if (CurrentMode == Mode.VisualMode) {
             return Math.Max(CurrentPosition, VisualModeStartPosition);
@@ -56,50 +57,54 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    private void ExitVisualMode() {
+    public void NormalMode() {
         if (CurrentMode == Mode.VisualMode) {
             foreach (int i in SelectedRange()) {
                 Commands[i].Selected = false;
             }
             Commands[CurrentPosition].Selected = true;
-            CurrentMode = Mode.NormalMode;
         }
+        CurrentMode = Mode.NormalMode;
     }
 
-    public void EscPressed() {
-        ExitVisualMode();
-    }
-
-    public void VPressed() {
+    public void ToggleVisualMode() {
         if (CurrentMode == Mode.NormalMode) {
             CurrentMode = Mode.VisualMode;
             VisualModeStartPosition = CurrentPosition;
         } else {
-            ExitVisualMode();
+            NormalMode();
         }
     }
 
-    public void UpArrowPressed() {
+    public void InsertMode() {
+        CurrentMode = Mode.InsertMode;
+    }
+
+    public void MoveUp() {
         if (CurrentPosition - 1 < 0) return;
 
-        Commands[CurrentPosition].Selected = CurrentMode == Mode.NormalMode ?
-            false : CurrentPosition <= VisualModeStartPosition;
+        Commands[CurrentPosition].Selected = (
+            CurrentMode == Mode.VisualMode &&
+            CurrentPosition <= VisualModeStartPosition
+        );
 
         CurrentPosition--;
         Commands[CurrentPosition].Selected = true;
     }
 
-    public void DownArrowPressed() {
+    public void MoveDown() {
         if (CurrentPosition + 1 >= Commands.Count) return;
 
-        Commands[CurrentPosition].Selected = CurrentMode == Mode.NormalMode ?
-            false : CurrentPosition >= VisualModeStartPosition;
+        Commands[CurrentPosition].Selected = (
+            CurrentMode == Mode.VisualMode &&
+            CurrentPosition >= VisualModeStartPosition
+        );
 
         CurrentPosition++;
         Commands[CurrentPosition].Selected = true;
     }
 
-    public void ControlUpArrowPressed() {
+    public void ShiftUp() {
         if (SelectedStart() == 0) return;
 
         foreach (int pos in SelectedRange()) {
@@ -108,7 +113,16 @@ public class MainWindowViewModel : ViewModelBase {
         CurrentPosition--; VisualModeStartPosition--;
     }
 
-    public void DeletePressed() {
+    public void ShiftDown() {
+        if (SelectedEnd() == Commands.Count) return;
+
+        foreach (int pos in SelectedRange().Reverse()) {
+            (Commands[pos], Commands[pos+1]) = (Commands[pos+1], Commands[pos]);
+        }
+        CurrentPosition++; VisualModeStartPosition++;
+    }
+
+    public void Delete() {
         int repeat = SelectedEnd() - SelectedStart() + 1;
         for (int i=0; i<repeat; i++) {
             Commands.RemoveAt(SelectedStart());
@@ -116,16 +130,7 @@ public class MainWindowViewModel : ViewModelBase {
         CurrentPosition = SelectedStart();
         if (CurrentPosition == Commands.Count) CurrentPosition--;
         Commands[CurrentPosition].Selected = true;
-        ExitVisualMode();
-    }
-
-    public void ControlDownArrowPressed() {
-        if (SelectedEnd() == Commands.Count) return;
-
-        foreach (int pos in SelectedRange().Reverse()) {
-            (Commands[pos], Commands[pos+1]) = (Commands[pos+1], Commands[pos]);
-        }
-        CurrentPosition++; VisualModeStartPosition++;
+        NormalMode();
     }
 
     // Conversions
@@ -140,40 +145,41 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void EPressed() {
+    public void ConvertToEdit() {
         ConvertCommitCommands(CommitCommandConversions.ToEdit);
-        ExitVisualMode();
+        NormalMode();
     }
 
-    public void FPressed() {
+    public void ConvertToFixup() {
         ConvertCommitCommands(CommitCommandConversions.ToFixup);
-        ExitVisualMode();
+        NormalMode();
     }
 
-    public void PPressed() {
+    public void ConvertToPick() {
         ConvertCommitCommands(CommitCommandConversions.ToPick);
-        ExitVisualMode();
+        NormalMode();
     }
 
-    public void RPressed() {
+    public void ConvertToReword() {
         ConvertCommitCommands(CommitCommandConversions.ToReword);
-        ExitVisualMode();
+        NormalMode();
     }
 
-    public void SPressed() {
+    public void ConvertToSquash() {
         ConvertCommitCommands(CommitCommandConversions.ToSquash);
-        ExitVisualMode();
+        NormalMode();
     }
 
     // Creations
 
     private void Insert(CommandViewModel cvm) {
         Commands.Insert(SelectedEnd()+1, cvm);
-        ExitVisualMode();
-        DownArrowPressed();
+        NormalMode();
+        MoveDown();
     }
 
-    public void LPressed() {
+    public void AddLabel() {
         Insert(new LabelViewModel(new LabelCommand("")));
+        InsertMode();
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -23,7 +24,7 @@ public static class FindExtensions {
 public partial class MainWindow : Window {
     MainWindowViewModel dataContext;
     ItemsControl commandsView;
-
+    Dictionary<Key, Action> controls;
     public MainWindow() {
         InitializeComponent();
     }
@@ -36,11 +37,36 @@ public partial class MainWindow : Window {
         base.OnOpened(e);
         dataContext = (DataContext as MainWindowViewModel)!;
         commandsView = this.FindControl<ItemsControl>("CommandsView")!;
+        controls = new Dictionary<Key, Action>{
+            {Key.Escape, dataContext.NormalMode},
+            {Key.Up, dataContext.MoveUp},
+            {Key.Down, dataContext.MoveDown},
+            {Key.E, dataContext.ConvertToEdit},
+            {Key.F, dataContext.ConvertToFixup},
+            {Key.P, dataContext.ConvertToPick},
+            {Key.R, dataContext.ConvertToReword},
+            {Key.S, dataContext.ConvertToSquash},
+            {Key.V, dataContext.ToggleVisualMode},
+            {Key.L, dataContext.AddLabel},
+            {Key.J, dataContext.ShiftUp},
+            {Key.K, dataContext.ShiftDown},
+            {Key.I, dataContext.InsertMode},
+            {Key.Delete, dataContext.Delete},
+        };
     }
 
     private void WindowKeyDown(object sender, KeyEventArgs e) {
-        if (dataContext.Commands[dataContext.CurrentPosition] is LabelViewModel) {
-            commandsView.ContainerFromIndex(dataContext.CurrentPosition)!.FindDescendant<TextBox>("Focus")!.Focus();
+        Action action;
+        if (controls.TryGetValue(e.Key, out action)) {
+            action();
+        }
+
+        Control control = commandsView.ContainerFromIndex(dataContext.CurrentPosition)!;
+        TextBox? FocusBox = control.FindDescendant<TextBox>("Focus");
+        if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
+            FocusBox.Focus();
+        } else {
+            FocusManager.ClearFocus();
         }
     }
 }
