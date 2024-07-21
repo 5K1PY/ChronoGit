@@ -89,6 +89,11 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
+    public void EPressed() {
+        ConvertCommitCommands(CommitCommandConversions.ToEdit);
+        ExitVisualMode();
+    }
+
     public void RPressed() {
         ConvertCommitCommands(CommitCommandConversions.ToReword);
         ExitVisualMode();

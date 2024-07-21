@@ -19,6 +19,7 @@
     <Window.KeyBindings>
         <KeyBinding Gesture="Up"   Command="{Binding UpArrowPressed}" />
         <KeyBinding Gesture="Down" Command="{Binding DownArrowPressed}" />
+        <KeyBinding Gesture="E"    Command="{Binding EPressed}" />
         <KeyBinding Gesture="P"    Command="{Binding PPressed}" />
         <KeyBinding Gesture="R"    Command="{Binding RPressed}" />
         <KeyBinding Gesture="V"    Command="{Binding VPressed}" />
