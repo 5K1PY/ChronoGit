@@ -34,7 +34,7 @@ public sealed class DropCommand(Commit commit) : CommitCommand {
     public override Commit CommandCommit { get; set; } = commit;
 }
 
-public sealed class LabelCommand(string label) {
+public sealed class LabelCommand(string label) : Command {
     public string Label { get; set; } = label;
 }
 

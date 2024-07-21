@@ -31,13 +31,28 @@ public class MainWindowViewModel : ViewModelBase {
     public Mode CurrentMode { get; private set; } = Mode.NormalMode;
     public int CurrentPosition { get; private set; } = 0;
     public int VisualModeStartPosition { get; private set; } = 0;
-    private IEnumerable<int> SelectedRange() {
+
+    private int SelectedStart() {
         if (CurrentMode == Mode.NormalMode) {
-            yield return CurrentPosition;
+            return CurrentPosition;
         } else if (CurrentMode == Mode.VisualMode) {
-            for (int i = Math.Min(CurrentPosition, VisualModeStartPosition); i <= Math.Max(CurrentPosition, VisualModeStartPosition); i++) {
-                yield return i;
-            }
+            return Math.Min(CurrentPosition, VisualModeStartPosition);
+        }
+        throw new NotImplementedException();
+    }
+
+    private int SelectedEnd() {
+        if (CurrentMode == Mode.NormalMode) {
+            return CurrentPosition;
+        } else if (CurrentMode == Mode.VisualMode) {
+            return Math.Max(CurrentPosition, VisualModeStartPosition);
+        }
+        throw new NotImplementedException();
+    }
+
+    private IEnumerable<int> SelectedRange() {
+        for (int i = SelectedStart(); i <= SelectedEnd(); i++) {
+            yield return i;
         }
     }
 
@@ -85,18 +100,29 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     public void ControlUpArrowPressed() {
-        IEnumerable<int> range = SelectedRange();
-        if (range.First() == 0) return;
-        foreach (int pos in range) {
+        if (SelectedStart() == 0) return;
+
+        foreach (int pos in SelectedRange()) {
             (Commands[pos-1], Commands[pos]) = (Commands[pos], Commands[pos-1]);
         }
         CurrentPosition--; VisualModeStartPosition--;
     }
 
+    public void DeletePressed() {
+        int repeat = SelectedEnd() - SelectedStart() + 1;
+        for (int i=0; i<repeat; i++) {
+            Commands.RemoveAt(SelectedStart());
+        }
+        CurrentPosition = SelectedStart();
+        if (CurrentPosition == Commands.Count) CurrentPosition--;
+        Commands[CurrentPosition].Selected = true;
+        ExitVisualMode();
+    }
+
     public void ControlDownArrowPressed() {
-        IEnumerable<int> range = SelectedRange().Reverse();
-        if (range.First() == Commands.Count) return;
-        foreach (int pos in range) {
+        if (SelectedEnd() == Commands.Count) return;
+
+        foreach (int pos in SelectedRange().Reverse()) {
             (Commands[pos], Commands[pos+1]) = (Commands[pos+1], Commands[pos]);
         }
         CurrentPosition++; VisualModeStartPosition++;
@@ -139,4 +165,15 @@ public class MainWindowViewModel : ViewModelBase {
         ExitVisualMode();
     }
 
+    // Creations
+
+    private void Insert(CommandViewModel cvm) {
+        Commands.Insert(SelectedEnd()+1, cvm);
+        ExitVisualMode();
+        DownArrowPressed();
+    }
+
+    public void LPressed() {
+        Insert(new LabelViewModel(new LabelCommand("TODO")));
+    }
 }
