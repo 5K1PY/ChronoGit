@@ -19,6 +19,7 @@
     <Window.KeyBindings>
         <KeyBinding Gesture="Up"   Command="{Binding UpArrowPressed}" />
         <KeyBinding Gesture="Down" Command="{Binding DownArrowPressed}" />
+        <KeyBinding Gesture="V"    Command="{Binding VPressed}" />
     </Window.KeyBindings>
 
     <Grid RowDefinitions="Auto, *, Auto"
