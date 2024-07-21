@@ -19,6 +19,7 @@
     <Window.KeyBindings>
         <KeyBinding Gesture="Up"   Command="{Binding UpArrowPressed}" />
         <KeyBinding Gesture="Down" Command="{Binding DownArrowPressed}" />
+        <KeyBinding Gesture="P"    Command="{Binding PPressed}" />
         <KeyBinding Gesture="R"    Command="{Binding RPressed}" />
         <KeyBinding Gesture="V"    Command="{Binding VPressed}" />
     </Window.KeyBindings>
@@ -28,7 +29,7 @@
         <ScrollViewer Grid.Row="1">
             <!-- This ItemsControl show all added ToDoItems. -->
             <!-- It needs to be placed inside a ScrollViewer because other than a ListBox it has not its own -->
-            <ItemsControl ItemsSource="{Binding Actions}">
+            <ItemsControl ItemsSource="{Binding Commands}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Vertical" />

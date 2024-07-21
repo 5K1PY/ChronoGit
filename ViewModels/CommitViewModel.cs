@@ -41,8 +41,15 @@ public sealed partial class PickViewModel : CommitCommandViewModel {
 
 public sealed partial class RewordViewModel : CommitCommandViewModel {
     protected internal override CommitCommand commitCommand { get; set; }
-    public RewordViewModel(RewordCommand squash) {
-        commitCommand = squash;
+    public RewordViewModel(RewordCommand reword) {
+        commitCommand = reword;
+    }
+}
+
+public sealed partial class EditViewModel : CommitCommandViewModel {
+    protected internal override CommitCommand commitCommand { get; set; }
+    public EditViewModel(EditCommand edit) {
+        commitCommand = edit;
     }
 }
 
@@ -67,5 +74,9 @@ public static class CommitCommandConversions {
 
     public static RewordViewModel ToReword(this CommitCommandViewModel ccvm) {
         return new RewordViewModel(new RewordCommand(ccvm.commitCommand.CommandCommit));
+    }
+
+    public static EditViewModel ToEdit(this CommitCommandViewModel ccvm) {
+        return new EditViewModel(new EditCommand(ccvm.commitCommand.CommandCommit));
     }
 }

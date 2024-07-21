@@ -12,19 +12,19 @@ public enum Mode {
 };
 
 public class MainWindowViewModel : ViewModelBase {
-    private ObservableCollection<CommandViewModel> _actions;
-    public ObservableCollection<CommandViewModel> Actions
+    private ObservableCollection<CommandViewModel> _commands;
+    public ObservableCollection<CommandViewModel> Commands
     {
-        get => _actions;
-        set => this.RaiseAndSetIfChanged(ref _actions, value);
+        get => _commands;
+        set => this.RaiseAndSetIfChanged(ref _commands, value);
     }
     public MainWindowViewModel() {
         var commits = Init.GetCommits();
-        _actions = new ObservableCollection<CommandViewModel>();
+        _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
-            _actions.Add(new PickViewModel(action));
+            _commands.Add(new PickViewModel(action));
         }
-        _actions[0].Selected = true;
+        _commands[0].Selected = true;
     }
 
     public Mode CurrentMode { get; private set; } = Mode.NormalMode;
@@ -43,21 +43,41 @@ public class MainWindowViewModel : ViewModelBase {
     public void UpArrowPressed() {
         if (CurrentPosition - 1 < 0) return;
 
-        Actions[CurrentPosition].Selected = CurrentMode == Mode.NormalMode ?
+        Commands[CurrentPosition].Selected = CurrentMode == Mode.NormalMode ?
             false : CurrentPosition <= VisualModeStartPosition;
 
         CurrentPosition--;
-        Actions[CurrentPosition].Selected = true;
+        Commands[CurrentPosition].Selected = true;
     }
 
     public void DownArrowPressed() {
-        if (CurrentPosition + 1 >= Actions.Count) return;
+        if (CurrentPosition + 1 >= Commands.Count) return;
 
-        Actions[CurrentPosition].Selected = CurrentMode == Mode.NormalMode ?
+        Commands[CurrentPosition].Selected = CurrentMode == Mode.NormalMode ?
             false : CurrentPosition >= VisualModeStartPosition;
 
         CurrentPosition++;
-        Actions[CurrentPosition].Selected = true;
+        Commands[CurrentPosition].Selected = true;
+    }
+
+    private delegate CommandViewModel ConvertCommitCommand(CommitCommandViewModel ccvm);
+    private void ConvertCommitCommands(ConvertCommitCommand convert) {
+        foreach (int pos in SelectedRange()) {
+            CommitCommandViewModel? ccvm = Commands[pos] as CommitCommandViewModel;
+            if (ccvm != null) {
+                Commands[pos] = convert(ccvm).AsSelected();
+            }
+        }
+    }
+
+    private void ExitVisualMode() {
+        if (CurrentMode == Mode.VisualMode) {
+            foreach (int i in SelectedRange()) {
+                Commands[i].Selected = false;
+            }
+            Commands[CurrentPosition].Selected = true;
+            CurrentMode = Mode.NormalMode;
+        }
     }
 
     public void VPressed() {
@@ -65,20 +85,17 @@ public class MainWindowViewModel : ViewModelBase {
             CurrentMode = Mode.VisualMode;
             VisualModeStartPosition = CurrentPosition;
         } else {
-            foreach (int i in SelectedRange()) {
-                Actions[i].Selected = false;
-            }
-            Actions[CurrentPosition].Selected = true;
-            CurrentMode = Mode.NormalMode;
+            ExitVisualMode();
         }
     }
 
     public void RPressed() {
-        foreach (int pos in SelectedRange()) {
-            CommitCommandViewModel? ccvm = Actions[pos] as CommitCommandViewModel;
-            if (ccvm != null) {
-                Actions[pos] = ccvm.ToReword().AsSelected();
-            }
-        }
+        ConvertCommitCommands(CommitCommandConversions.ToReword);
+        ExitVisualMode();
+    }
+
+    public void PPressed() {
+        ConvertCommitCommands(CommitCommandConversions.ToPick);
+        ExitVisualMode();
     }
 }
