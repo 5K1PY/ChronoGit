@@ -22,9 +22,9 @@ public static class FindExtensions {
 }
 
 public partial class MainWindow : Window {
-    MainWindowViewModel dataContext;
-    ItemsControl commandsView;
-    Dictionary<Key, Action> controls;
+    MainWindowViewModel? dataContext;
+    ItemsControl? commandsView;
+    Dictionary<Key, Action>? controls;
     public MainWindow() {
         InitializeComponent();
     }
@@ -59,18 +59,18 @@ public partial class MainWindow : Window {
     }
 
     private void WindowKeyDown(object sender, KeyEventArgs e) {
-        Action action;
-        if (controls.TryGetValue(e.Key, out action)) {
+        Action? action;
+        if (controls!.TryGetValue(e.Key, out action)) {
             action();
         }
 
         // Can fail if Commands is empty
-        Control? control = commandsView.ContainerFromIndex(dataContext.CurrentPosition);
-        TextBox? FocusBox = control?.FindDescendant<TextBox>("Focus");
+        Control? control = commandsView!.ContainerFromIndex(dataContext!.CurrentPosition);
+        TextBox? FocusBox = control?.FindDescendant<TextBox>("FocusHere");
         if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
             FocusBox.Focus();
         } else {
-            FocusManager.ClearFocus();
+            FocusManager!.ClearFocus();
         }
     }
 }
