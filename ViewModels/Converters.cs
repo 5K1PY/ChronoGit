@@ -17,3 +17,4 @@ public class SelectionToColorConverter : IValueConverter {
         throw new NotImplementedException();
     }
 }
+
