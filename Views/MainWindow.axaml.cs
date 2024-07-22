@@ -50,8 +50,8 @@ public partial class MainWindow : Window {
             {Key.S, dataContext.ConvertToSquash},
             {Key.V, dataContext.ToggleVisualMode},
             {Key.L, dataContext.AddLabel},
-            {Key.J, dataContext.ShiftUp},
-            {Key.K, dataContext.ShiftDown},
+            {Key.J, dataContext.ShiftDown},
+            {Key.K, dataContext.ShiftUp},
             {Key.I, dataContext.InsertMode},
             {Key.Delete, dataContext.Delete},
         };
