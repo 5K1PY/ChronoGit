@@ -17,13 +17,13 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, *, Auto"
-    x:Name="Root">
+    <Grid RowDefinitions="Auto, *, Auto" x:Name="Root">
         <ScrollViewer Grid.Row="1">
             <!-- This ItemsControl show all added ToDoItems. -->
             <!-- It needs to be placed inside a ScrollViewer because other than a ListBox it has not its own -->
             <ItemsControl Name="CommandsView" ItemsSource="{Binding Commands}">
             </ItemsControl>
         </ScrollViewer>
+        <TextBlock Grid.Row="2" Text="{Binding CurrentMode}"/>
     </Grid>
 </Window>

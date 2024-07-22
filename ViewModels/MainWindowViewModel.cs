@@ -29,7 +29,11 @@ public class MainWindowViewModel : ViewModelBase {
         _commands[0].Selected = true;
     }
 
-    public Mode CurrentMode { get; private set; } = Mode.NormalMode;
+    private Mode _currentMode = Mode.NormalMode;
+    public Mode CurrentMode {
+        get => _currentMode;
+        set => this.RaiseAndSetIfChanged(ref _currentMode, value);
+    }
     public int CurrentPosition { get; private set; } = 0;
     public int VisualModeStartPosition { get; private set; } = 0;
 
