@@ -10,6 +10,7 @@ public class SelectionToColorConverter : IValueConverter {
         if (value is bool boolValue) {
             return boolValue ? Brushes.Wheat : Brushes.White;
         }
+        // Throwing here doesn't work anyway
         return Brushes.Transparent;
     }
 

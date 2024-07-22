@@ -20,6 +20,8 @@ public class MainWindowViewModel : ViewModelBase {
         get => _commands;
         set => this.RaiseAndSetIfChanged(ref _commands, value);
     }
+
+    public bool CommandsEmpty => !Commands.Any();
     public MainWindowViewModel() {
         var commits = Init.GetCommits();
         _commands = new ObservableCollection<CommandViewModel>();
@@ -27,6 +29,8 @@ public class MainWindowViewModel : ViewModelBase {
             _commands.Add(new PickViewModel(action));
         }
         _commands[0].Selected = true;
+        Commands.CollectionChanged += (s, e) => this.RaisePropertyChanged(nameof(CommandsEmpty));
+
     }
 
     private Mode _currentMode = Mode.NormalMode;
