@@ -34,7 +34,11 @@ public class MainWindowViewModel : ViewModelBase {
         get => _currentMode;
         set => this.RaiseAndSetIfChanged(ref _currentMode, value);
     }
-    public int CurrentPosition { get; private set; } = 0;
+    private int _currentPosition = 0;
+    public int CurrentPosition  {
+        get => _currentPosition;
+        set => this.RaiseAndSetIfChanged(ref _currentPosition, value);
+    }
     public int VisualModeStartPosition { get; private set; } = 0;
 
     private int SelectedStart() {
