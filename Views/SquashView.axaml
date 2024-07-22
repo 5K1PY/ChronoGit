@@ -15,6 +15,6 @@
         <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Width="60" Path="/Assets/squash_red.svg"/>
         <TextBlock Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" Text="{Binding Id}"/>
         <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding MessageShort}" FontSize="16"/>
-        <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Author}"/>
+        <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Author}" TextDecorations="Strikethrough" Foreground="Gray"/>
     </Grid>
 </UserControl>
