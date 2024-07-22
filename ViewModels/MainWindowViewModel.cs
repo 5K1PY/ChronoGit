@@ -183,6 +183,11 @@ public class MainWindowViewModel : ViewModelBase {
         NormalMode();
     }
 
+    public void ConvertToDrop() {
+        ConvertCommitCommands(CommitCommandConversions.ToDrop);
+        NormalMode();
+    }
+
     // Creations
 
     private void Insert(CommandViewModel cvm) {

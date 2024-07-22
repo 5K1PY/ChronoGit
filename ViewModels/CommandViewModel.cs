@@ -53,6 +53,10 @@ public sealed partial class FixupViewModel(FixupCommand fixup) : CommitCommandVi
     protected internal override Command Command { get; set; } = fixup;
 }
 
+public sealed partial class DropViewModel(DropCommand drop) : CommitCommandViewModel {
+    protected internal override Command Command { get; set; } = drop;
+}
+
 public sealed partial class LabelViewModel(LabelCommand label) : CommandViewModel {
     protected internal override Command Command { get; set; } = label;
     internal LabelCommand LabelCommand => (LabelCommand) Command;
@@ -81,5 +85,9 @@ public static class CommitCommandConversions {
 
     public static FixupViewModel ToFixup(this CommitCommandViewModel ccvm) {
         return new FixupViewModel(new FixupCommand(ccvm.CommitCommand.CommandCommit));
+    }
+
+    public static DropViewModel ToDrop(this CommitCommandViewModel ccvm) {
+        return new DropViewModel(new DropCommand(ccvm.CommitCommand.CommandCommit));
     }
 }
