@@ -41,6 +41,8 @@ public partial class MainWindow : Window {
             {Key.Escape, dataContext.NormalMode},
             {Key.Up, dataContext.MoveUp},
             {Key.Down, dataContext.MoveDown},
+            {Key.Home, dataContext.MoveToStart},
+            {Key.End, dataContext.MoveToEnd},
             {Key.E, dataContext.ConvertToEdit},
             {Key.F, dataContext.ConvertToFixup},
             {Key.P, dataContext.ConvertToPick},

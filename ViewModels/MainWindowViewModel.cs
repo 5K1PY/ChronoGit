@@ -88,28 +88,33 @@ public class MainWindowViewModel : ViewModelBase {
         CurrentMode = Mode.InsertMode;
     }
 
-    public void MoveUp() {
-        if (CurrentPosition - 1 < 0) return;
-
-        Commands[CurrentPosition].Selected = (
-            CurrentMode == Mode.VisualMode &&
-            CurrentPosition <= VisualModeStartPosition
-        );
-
-        CurrentPosition--;
+    private void MoveSelection(int relativeDifference) {
+        int targetPosition = CurrentPosition + relativeDifference;
+        targetPosition = Math.Max(0, Math.Min(targetPosition, Commands.Count-1));
+        for (int i=Math.Min(targetPosition, CurrentPosition); i<Math.Max(targetPosition, CurrentPosition); i++) {
+            Commands[CurrentPosition].Selected = (
+                CurrentMode == Mode.VisualMode &&
+                Math.Abs(targetPosition - VisualModeStartPosition) >= Math.Abs(CurrentPosition - VisualModeStartPosition)
+            );
+        }
+        CurrentPosition = targetPosition;
         Commands[CurrentPosition].Selected = true;
     }
 
+    public void MoveUp() {
+        MoveSelection(-1);
+    }
+
     public void MoveDown() {
-        if (CurrentPosition + 1 >= Commands.Count) return;
+        MoveSelection(1);
+    }
 
-        Commands[CurrentPosition].Selected = (
-            CurrentMode == Mode.VisualMode &&
-            CurrentPosition >= VisualModeStartPosition
-        );
+    public void MoveToStart() {
+        MoveSelection(-CurrentPosition);
+    }
 
-        CurrentPosition++;
-        Commands[CurrentPosition].Selected = true;
+    public void MoveToEnd() {
+        MoveSelection(Commands.Count - CurrentPosition - 1);
     }
 
     public void ShiftUp() {
