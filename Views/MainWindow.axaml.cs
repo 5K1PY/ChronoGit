@@ -64,8 +64,9 @@ public partial class MainWindow : Window {
             action();
         }
 
-        Control control = commandsView.ContainerFromIndex(dataContext.CurrentPosition)!;
-        TextBox? FocusBox = control.FindDescendant<TextBox>("Focus");
+        // Can fail if Commands is empty
+        Control? control = commandsView.ContainerFromIndex(dataContext.CurrentPosition);
+        TextBox? FocusBox = control?.FindDescendant<TextBox>("Focus");
         if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
             FocusBox.Focus();
         } else {

@@ -51,6 +51,7 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     private int SelectedEnd() {
+        if (Commands.Count == 0) return -1;
         if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
             return CurrentPosition;
         } else if (CurrentMode == Mode.VisualMode) {
@@ -68,9 +69,10 @@ public class MainWindowViewModel : ViewModelBase {
     public void NormalMode() {
         if (CurrentMode == Mode.VisualMode) {
             foreach (int i in SelectedRange()) {
-                Commands[i].Selected = false;
+                if (i != CurrentPosition) {
+                    Commands[i].Selected = false;
+                }
             }
-            Commands[CurrentPosition].Selected = true;
         }
         CurrentMode = Mode.NormalMode;
     }
@@ -91,14 +93,17 @@ public class MainWindowViewModel : ViewModelBase {
     private void MoveSelection(int relativeDifference) {
         int targetPosition = CurrentPosition + relativeDifference;
         targetPosition = Math.Max(0, Math.Min(targetPosition, Commands.Count-1));
-        for (int i=Math.Min(targetPosition, CurrentPosition); i<Math.Max(targetPosition, CurrentPosition); i++) {
-            Commands[CurrentPosition].Selected = (
+        if (targetPosition == CurrentPosition) return;
+
+        for (int i=Math.Min(targetPosition, CurrentPosition); i<=Math.Max(targetPosition, CurrentPosition); i++) {
+            Commands[i].Selected = (
+                i == targetPosition ||
                 CurrentMode == Mode.VisualMode &&
-                Math.Abs(targetPosition - VisualModeStartPosition) >= Math.Abs(CurrentPosition - VisualModeStartPosition)
+                Math.Min(targetPosition, VisualModeStartPosition) <= i &&
+                i <= Math.Max(targetPosition, VisualModeStartPosition)
             );
         }
         CurrentPosition = targetPosition;
-        Commands[CurrentPosition].Selected = true;
     }
 
     public void MoveUp() {
@@ -127,7 +132,7 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     public void ShiftDown() {
-        if (SelectedEnd() == Commands.Count) return;
+        if (SelectedEnd()+1 == Commands.Count) return;
 
         foreach (int pos in SelectedRange().Reverse()) {
             (Commands[pos], Commands[pos+1]) = (Commands[pos+1], Commands[pos]);
@@ -136,14 +141,15 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     public void Delete() {
-        int repeat = SelectedEnd() - SelectedStart() + 1;
-        for (int i=0; i<repeat; i++) {
-            Commands.RemoveAt(SelectedStart());
+        foreach (int i in SelectedRange().Reverse()) {
+            Commands.RemoveAt(i);
         }
         CurrentPosition = SelectedStart();
+        if (Commands.Count == 0) return;
+
         if (CurrentPosition == Commands.Count) CurrentPosition--;
         Commands[CurrentPosition].Selected = true;
-        NormalMode();
+        CurrentMode = Mode.NormalMode;
     }
 
     // Conversions
