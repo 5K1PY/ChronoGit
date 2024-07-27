@@ -25,8 +25,7 @@ public partial class MainWindow : Window {
     MainWindowViewModel? dataContext;
     ItemsControl? commandsView;
 
-    // Shift pressed?, Control pressed?, Key
-    Dictionary<Tuple<bool, bool, Key>, Action>? controls;
+    Dictionary<KeyCombination, Action>? controls;
     Dictionary<Key, bool> ModifiersPressed = new Dictionary<Key, bool>{
         {Key.LeftShift, false},
         {Key.RightShift, false},
@@ -46,29 +45,29 @@ public partial class MainWindow : Window {
         base.OnOpened(e);
         dataContext = (DataContext as MainWindowViewModel)!;
         commandsView = this.FindControl<ItemsControl>("CommandsView")!;
-        controls = new Dictionary<Tuple<bool, bool, Key>, Action>{
-            {new Tuple<bool, bool, Key>(false, false, Key.Escape), dataContext.NormalMode},
-            {new Tuple<bool, bool, Key>(false, false, Key.Up),     dataContext.MoveUp},
-            {new Tuple<bool, bool, Key>(false, false, Key.Down),   dataContext.MoveDown},
-            {new Tuple<bool, bool, Key>(false, false, Key.Home),   dataContext.MoveToStart},
-            {new Tuple<bool, bool, Key>(false, false, Key.End),    dataContext.MoveToEnd},
-            {new Tuple<bool, bool, Key>(false, false, Key.D),      dataContext.ConvertToDrop},
-            {new Tuple<bool, bool, Key>(false, false, Key.E),      dataContext.ConvertToEdit},
-            {new Tuple<bool, bool, Key>(false, false, Key.F),      dataContext.ConvertToFixup},
-            {new Tuple<bool, bool, Key>(false, false, Key.I),      dataContext.InsertMode},
-            {new Tuple<bool, bool, Key>(false, false, Key.J),      dataContext.ShiftDown},
-            {new Tuple<bool, bool, Key>(false, false, Key.K),      dataContext.ShiftUp},
-            {new Tuple<bool, bool, Key>(false, false, Key.L),      dataContext.AddLabel},
-            {new Tuple<bool, bool, Key>(false, false, Key.P),      dataContext.ConvertToPick},
-            {new Tuple<bool, bool, Key>(false, false, Key.R),      dataContext.ConvertToReword},
-            {new Tuple<bool, bool, Key>(false, false, Key.S),      dataContext.ConvertToSquash},
-            {new Tuple<bool, bool, Key>(false, false, Key.V),      dataContext.ToggleVisualMode},
-            {new Tuple<bool, bool, Key>(false, false, Key.Delete), dataContext.Delete},
+        controls = new Dictionary<KeyCombination, Action>{
+            {new KeyCombination(false, false, Key.Escape), dataContext.NormalMode},
+            {new KeyCombination(false, false, Key.Up),     dataContext.MoveUp},
+            {new KeyCombination(false, false, Key.Down),   dataContext.MoveDown},
+            {new KeyCombination(false, false, Key.Home),   dataContext.MoveToStart},
+            {new KeyCombination(false, false, Key.End),    dataContext.MoveToEnd},
+            {new KeyCombination(false, false, Key.D),      dataContext.ConvertToDrop},
+            {new KeyCombination(false, false, Key.E),      dataContext.ConvertToEdit},
+            {new KeyCombination(false, false, Key.F),      dataContext.ConvertToFixup},
+            {new KeyCombination(false, false, Key.I),      dataContext.InsertMode},
+            {new KeyCombination(false, false, Key.J),      dataContext.ShiftDown},
+            {new KeyCombination(false, false, Key.K),      dataContext.ShiftUp},
+            {new KeyCombination(false, false, Key.L),      dataContext.AddLabel},
+            {new KeyCombination(false, false, Key.P),      dataContext.ConvertToPick},
+            {new KeyCombination(false, false, Key.R),      dataContext.ConvertToReword},
+            {new KeyCombination(false, false, Key.S),      dataContext.ConvertToSquash},
+            {new KeyCombination(false, false, Key.V),      dataContext.ToggleVisualMode},
+            {new KeyCombination(false, false, Key.Delete), dataContext.Delete},
         };
     }
 
-    private Tuple<bool, bool, Key> GetCurrentKeyCombination(Key key) {
-        return new Tuple<bool, bool, Key>(
+    private KeyCombination GetCurrentKeyCombination(Key key) {
+        return new KeyCombination(
             ModifiersPressed[Key.LeftShift] || ModifiersPressed[Key.RightShift],
             ModifiersPressed[Key.LeftCtrl] || ModifiersPressed[Key.RightCtrl],
             key
