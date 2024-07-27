@@ -17,17 +17,26 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+ 
 
-    <Grid RowDefinitions="*, Auto" ColumnDefinitions="*, Auto" x:Name="Root">
-        <ScrollViewer Grid.Row="0" Grid.Column="0">
+    <Grid RowDefinitions="Auto, *, Auto" x:Name="Root">
+        <DockPanel Grid.Row="0">
+            <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Preferences">
+                <MenuItem Name="RemapControls" Header="_RemapControls"/>
+            </MenuItem>
+            </Menu>
+        </DockPanel>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="0">
             <!-- This ItemsControl show all added ToDoItems. -->
             <!-- It needs to be placed inside a ScrollViewer because other than a ListBox it has not its own -->
             <ItemsControl Name="CommandsView" ItemsSource="{Binding Commands}">
             </ItemsControl>
         </ScrollViewer>
-        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Text="No commands left." IsVisible="{Binding CommandsEmpty}"/>
-        <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0,1,0,0">
+        <Border Grid.Row="2" BorderBrush="Black" BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="10, *, Auto, 10">
                 <TextBlock Grid.Column="1" Text="{Binding CurrentMode}"/>
                 <TextBlock Grid.Column="2" Text="{Binding CurrentPosition}"/>

@@ -21,11 +21,11 @@ public static class FindExtensions {
     }
 }
 
-public partial class MainWindow : Window {
+public sealed partial class MainWindow : Window {
     MainWindowViewModel? dataContext;
     ItemsControl? commandsView;
 
-    Dictionary<KeyCombination, Action>? controls;
+    KeyboardControls? controls;
     Dictionary<Key, bool> ModifiersPressed = new Dictionary<Key, bool>{
         {Key.LeftShift, false},
         {Key.RightShift, false},
@@ -35,6 +35,9 @@ public partial class MainWindow : Window {
 
     public MainWindow() {
         InitializeComponent();
+
+        MenuItem remapControls = this.FindControl<MenuItem>("RemapControls")!;
+        remapControls.PointerPressed += RemapControls_PointerPressed;
     }
 
     private void InitializeComponent() {
@@ -45,25 +48,7 @@ public partial class MainWindow : Window {
         base.OnOpened(e);
         dataContext = (DataContext as MainWindowViewModel)!;
         commandsView = this.FindControl<ItemsControl>("CommandsView")!;
-        controls = new Dictionary<KeyCombination, Action>{
-            {new KeyCombination(false, false, Key.Escape), dataContext.NormalMode},
-            {new KeyCombination(false, false, Key.Up),     dataContext.MoveUp},
-            {new KeyCombination(false, false, Key.Down),   dataContext.MoveDown},
-            {new KeyCombination(false, false, Key.Home),   dataContext.MoveToStart},
-            {new KeyCombination(false, false, Key.End),    dataContext.MoveToEnd},
-            {new KeyCombination(false, false, Key.D),      dataContext.ConvertToDrop},
-            {new KeyCombination(false, false, Key.E),      dataContext.ConvertToEdit},
-            {new KeyCombination(false, false, Key.F),      dataContext.ConvertToFixup},
-            {new KeyCombination(false, false, Key.I),      dataContext.InsertMode},
-            {new KeyCombination(false, false, Key.J),      dataContext.ShiftDown},
-            {new KeyCombination(false, false, Key.K),      dataContext.ShiftUp},
-            {new KeyCombination(false, false, Key.L),      dataContext.AddLabel},
-            {new KeyCombination(false, false, Key.P),      dataContext.ConvertToPick},
-            {new KeyCombination(false, false, Key.R),      dataContext.ConvertToReword},
-            {new KeyCombination(false, false, Key.S),      dataContext.ConvertToSquash},
-            {new KeyCombination(false, false, Key.V),      dataContext.ToggleVisualMode},
-            {new KeyCombination(false, false, Key.Delete), dataContext.Delete},
-        };
+        controls = KeyboardControls.Default(dataContext);
     }
 
     private KeyCombination GetCurrentKeyCombination(Key key) {
@@ -75,11 +60,10 @@ public partial class MainWindow : Window {
     }
 
     private void WindowKeyDown(object sender, KeyEventArgs e) {
-        Action? action;
-        if (controls!.TryGetValue(GetCurrentKeyCombination(e.Key), out action)) {
-            action();
-        } else if (ModifiersPressed.ContainsKey(e.Key)) {
+        if (ModifiersPressed.ContainsKey(e.Key)) {
             ModifiersPressed[e.Key] = true;
+        } else {
+            controls!.GetAction(GetCurrentKeyCombination(e.Key))?.Invoke();
         }
 
         // Can fail if Commands is empty
@@ -95,6 +79,13 @@ public partial class MainWindow : Window {
     private void WindowKeyUp(object sender, KeyEventArgs e) {
         if (ModifiersPressed.ContainsKey(e.Key)) {
             ModifiersPressed[e.Key] = false;
-        }   
+        }
+    }
+    
+    private void RemapControls_PointerPressed(object? sender, PointerPressedEventArgs e) {
+        RemapControlsWindow window = new() {
+            DataContext = new RemapControlsViewModel(controls!.Export())
+        };
+        window.ShowDialog(this);
     }
 }

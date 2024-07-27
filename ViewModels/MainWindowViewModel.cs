@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChronoGit.Views;
+using System.Threading;
 
 namespace ChronoGit.ViewModels;
 
@@ -15,8 +17,7 @@ public enum Mode {
 
 public class MainWindowViewModel : ViewModelBase {
     private ObservableCollection<CommandViewModel> _commands;
-    public ObservableCollection<CommandViewModel> Commands
-    {
+    public ObservableCollection<CommandViewModel> Commands {
         get => _commands;
         set => this.RaiseAndSetIfChanged(ref _commands, value);
     }
@@ -94,8 +95,7 @@ public class MainWindowViewModel : ViewModelBase {
         CurrentMode = Mode.InsertMode;
     }
 
-    private void MoveSelection(int relativeDifference) {
-        int targetPosition = CurrentPosition + relativeDifference;
+    private void MovePositionTo(int targetPosition) {
         targetPosition = Math.Max(0, Math.Min(targetPosition, Commands.Count-1));
         if (targetPosition == CurrentPosition) return;
 
@@ -111,19 +111,19 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     public void MoveUp() {
-        MoveSelection(-1);
+        MovePositionTo(CurrentPosition - 1);
     }
 
     public void MoveDown() {
-        MoveSelection(1);
+        MovePositionTo(CurrentPosition + 1);
     }
 
-    public void MoveToStart() {
-        MoveSelection(-CurrentPosition);
+    public void MoveToTop() {
+        MovePositionTo(0);
     }
 
-    public void MoveToEnd() {
-        MoveSelection(Commands.Count - CurrentPosition - 1);
+    public void MoveToBottom() {
+        MovePositionTo(Commands.Count);
     }
 
     public void ShiftUp() {
@@ -200,14 +200,31 @@ public class MainWindowViewModel : ViewModelBase {
 
     // Creations
 
-    private void Insert(CommandViewModel cvm) {
-        Commands.Insert(SelectedEnd()+1, cvm);
+    private void InsertAndMoveTo(CommandViewModel cvm, int targetPosition) {
+        Commands.Insert(targetPosition, cvm);
+        if (targetPosition <= CurrentPosition) {
+            CurrentPosition++;
+            VisualModeStartPosition++;
+        }
         NormalMode();
-        MoveDown();
+        MovePositionTo(targetPosition);
     }
 
-    public void AddLabel() {
-        Insert(new LabelViewModel(new LabelCommand("")));
+    private void InsertBefore(CommandViewModel cvm) {
+        InsertAndMoveTo(cvm, SelectedStart());
+    }
+
+    private void InsertAfter(CommandViewModel cvm) {
+        InsertAndMoveTo(cvm, SelectedEnd()+1);
+    }
+
+    public void AddLabelBefore() {
+        InsertBefore(new LabelViewModel(new LabelCommand("")));
+        InsertMode();
+    }
+
+    public void AddLabelAfter() {
+        InsertAfter(new LabelViewModel(new LabelCommand("")));
         InsertMode();
     }
 }

@@ -1,0 +1,40 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="using:ChronoGit.Views"
+        xmlns:vm="using:ChronoGit.ViewModels"
+        xmlns:m="using:ChronoGit.Models"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Width="400" Height="600"
+        x:Class="ChronoGit.Views.RemapControlsWindow"
+        x:DataType="vm:RemapControlsViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ChronoGit - Remap controls">
+
+    <Design.DataContext>
+        <vm:RemapControlsViewModel/>
+    </Design.DataContext>
+ 
+    <Grid RowDefinitions="570, *">
+    <ScrollViewer Grid.Row="0">
+        <Border BorderBrush="Black" BorderThickness="1" Padding="0">
+            <ItemsControl ItemsSource="{Binding Controls}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="200, 200">
+                            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Padding="5">
+                                <TextBlock Text="{Binding Item1.Name}"/>
+                            </Border>
+                            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
+                                <Button Content="{Binding Item2}" Width="200" Padding="5" HorizontalContentAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+    </ScrollViewer>
+    <Button Grid.Row="1">Save</Button>
+    </Grid>
+
+</Window>
