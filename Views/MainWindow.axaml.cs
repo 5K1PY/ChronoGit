@@ -24,7 +24,16 @@ public static class FindExtensions {
 public partial class MainWindow : Window {
     MainWindowViewModel? dataContext;
     ItemsControl? commandsView;
-    Dictionary<Key, Action>? controls;
+
+    // Shift pressed?, Control pressed?, Key
+    Dictionary<Tuple<bool, bool, Key>, Action>? controls;
+    Dictionary<Key, bool> ModifiersPressed = new Dictionary<Key, bool>{
+        {Key.LeftShift, false},
+        {Key.RightShift, false},
+        {Key.LeftCtrl, false},
+        {Key.RightCtrl, false},
+    };
+
     public MainWindow() {
         InitializeComponent();
     }
@@ -37,31 +46,41 @@ public partial class MainWindow : Window {
         base.OnOpened(e);
         dataContext = (DataContext as MainWindowViewModel)!;
         commandsView = this.FindControl<ItemsControl>("CommandsView")!;
-        controls = new Dictionary<Key, Action>{
-            {Key.Escape, dataContext.NormalMode},
-            {Key.Up, dataContext.MoveUp},
-            {Key.Down, dataContext.MoveDown},
-            {Key.Home, dataContext.MoveToStart},
-            {Key.End, dataContext.MoveToEnd},
-            {Key.D, dataContext.ConvertToDrop},
-            {Key.E, dataContext.ConvertToEdit},
-            {Key.F, dataContext.ConvertToFixup},
-            {Key.I, dataContext.InsertMode},
-            {Key.J, dataContext.ShiftDown},
-            {Key.K, dataContext.ShiftUp},
-            {Key.L, dataContext.AddLabel},
-            {Key.P, dataContext.ConvertToPick},
-            {Key.R, dataContext.ConvertToReword},
-            {Key.S, dataContext.ConvertToSquash},
-            {Key.V, dataContext.ToggleVisualMode},
-            {Key.Delete, dataContext.Delete},
+        controls = new Dictionary<Tuple<bool, bool, Key>, Action>{
+            {new Tuple<bool, bool, Key>(false, false, Key.Escape), dataContext.NormalMode},
+            {new Tuple<bool, bool, Key>(false, false, Key.Up),     dataContext.MoveUp},
+            {new Tuple<bool, bool, Key>(false, false, Key.Down),   dataContext.MoveDown},
+            {new Tuple<bool, bool, Key>(false, false, Key.Home),   dataContext.MoveToStart},
+            {new Tuple<bool, bool, Key>(false, false, Key.End),    dataContext.MoveToEnd},
+            {new Tuple<bool, bool, Key>(false, false, Key.D),      dataContext.ConvertToDrop},
+            {new Tuple<bool, bool, Key>(false, false, Key.E),      dataContext.ConvertToEdit},
+            {new Tuple<bool, bool, Key>(false, false, Key.F),      dataContext.ConvertToFixup},
+            {new Tuple<bool, bool, Key>(false, false, Key.I),      dataContext.InsertMode},
+            {new Tuple<bool, bool, Key>(false, false, Key.J),      dataContext.ShiftDown},
+            {new Tuple<bool, bool, Key>(false, false, Key.K),      dataContext.ShiftUp},
+            {new Tuple<bool, bool, Key>(false, false, Key.L),      dataContext.AddLabel},
+            {new Tuple<bool, bool, Key>(false, false, Key.P),      dataContext.ConvertToPick},
+            {new Tuple<bool, bool, Key>(false, false, Key.R),      dataContext.ConvertToReword},
+            {new Tuple<bool, bool, Key>(false, false, Key.S),      dataContext.ConvertToSquash},
+            {new Tuple<bool, bool, Key>(false, false, Key.V),      dataContext.ToggleVisualMode},
+            {new Tuple<bool, bool, Key>(false, false, Key.Delete), dataContext.Delete},
         };
+    }
+
+    private Tuple<bool, bool, Key> GetCurrentKeyCombination(Key key) {
+        return new Tuple<bool, bool, Key>(
+            ModifiersPressed[Key.LeftShift] || ModifiersPressed[Key.RightShift],
+            ModifiersPressed[Key.LeftCtrl] || ModifiersPressed[Key.RightCtrl],
+            key
+        );
     }
 
     private void WindowKeyDown(object sender, KeyEventArgs e) {
         Action? action;
-        if (controls!.TryGetValue(e.Key, out action)) {
+        if (controls!.TryGetValue(GetCurrentKeyCombination(e.Key), out action)) {
             action();
+        } else if (ModifiersPressed.ContainsKey(e.Key)) {
+            ModifiersPressed[e.Key] = true;
         }
 
         // Can fail if Commands is empty
@@ -72,5 +91,11 @@ public partial class MainWindow : Window {
         } else {
             FocusManager!.ClearFocus();
         }
+    }
+
+    private void WindowKeyUp(object sender, KeyEventArgs e) {
+        if (ModifiersPressed.ContainsKey(e.Key)) {
+            ModifiersPressed[e.Key] = false;
+        }   
     }
 }
