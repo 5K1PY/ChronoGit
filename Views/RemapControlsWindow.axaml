@@ -5,17 +5,19 @@
         xmlns:m="using:ChronoGit.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Width="400" Height="600"
+        Width="400" Height="650"
         x:Class="ChronoGit.Views.RemapControlsWindow"
         x:DataType="vm:RemapControlsViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="ChronoGit - Remap controls">
+        Title="ChronoGit - Remap controls"
+        KeyDown="WindowKeyDown"
+        KeyUp="WindowKeyUp">
 
     <Design.DataContext>
         <vm:RemapControlsViewModel/>
     </Design.DataContext>
  
-    <Grid RowDefinitions="570, *">
+    <Grid RowDefinitions="570, *, 35">
     <ScrollViewer Grid.Row="0">
         <Border BorderBrush="Black" BorderThickness="1" Padding="0">
             <ItemsControl ItemsSource="{Binding Controls}" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -23,10 +25,10 @@
                     <DataTemplate>
                         <Grid ColumnDefinitions="200, 200">
                             <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Padding="5">
-                                <TextBlock Text="{Binding Item1.Name}"/>
+                                <TextBlock Text="{Binding NamedAction.Name}"/>
                             </Border>
                             <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                                <Button Content="{Binding Item2}" Width="200" Padding="5" HorizontalContentAlignment="Center"/>
+                                <Button Content="{Binding KeyCombination}" Click="RemapControl" Width="200" Padding="5" HorizontalContentAlignment="Center"/>
                             </Border>
                         </Grid>
                     </DataTemplate>
@@ -34,7 +36,12 @@
             </ItemsControl>
         </Border>
     </ScrollViewer>
-    <Button Grid.Row="1">Save</Button>
+    <TextBlock Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Red" Margin="4"
+                Text="{Binding CollisionsText}" IsVisible="{Binding CollisionsPresent}"/>
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 0, 4, 0">
+        <Button Content="Cancel" Click="Cancel"/>
+        <Button Content="Save" Click="Save" IsEnabled="{Binding !CollisionsPresent}"/>
+    </StackPanel>
     </Grid>
 
 </Window>
