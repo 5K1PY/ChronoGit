@@ -18,6 +18,10 @@ public abstract partial class CommandViewModel : ViewModelBase {
         Selected = true;
         return this;
     }
+    public CommandViewModel AsNotSelected() {
+        Selected = false;
+        return this;
+    }
 }
 
 public abstract partial class CommitCommandViewModel : CommandViewModel {
@@ -57,9 +61,17 @@ public sealed partial class DropViewModel(DropCommand drop) : CommitCommandViewM
     protected internal override Command Command { get; set; } = drop;
 }
 
-public sealed partial class LabelViewModel(LabelCommand label) : CommandViewModel {
-    protected internal override Command Command { get; set; } = label;
+public sealed partial class LabelViewModel : CommandViewModel {
+    protected internal override Command Command { get; set; }
     internal LabelCommand LabelCommand => (LabelCommand) Command;
+    public LabelViewModel() {
+        Command = new LabelCommand("");
+    }
+
+    public LabelViewModel(LabelCommand label) {
+        Command = label;
+    }
+
     public string Label {
         get => LabelCommand.Label;
         set => this.RaiseAndSetIfChanged(ref LabelCommand.Label, value);

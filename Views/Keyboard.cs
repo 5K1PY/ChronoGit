@@ -36,6 +36,8 @@ public static class ActionDescriptions {
     public const string CONVERT_SQUASH = "Convert selection to squash";
     public const string VISUAL_MODE = "Toggle visual mode";
     public const string DELETE = "Delete selection";
+    public const string UNDO = "Undo";
+    public const string REDO = "Redo";
 }
 
 public class KeyboardControls {
@@ -59,7 +61,9 @@ public class KeyboardControls {
         ActionDescriptions.CONVERT_DROP,
         ActionDescriptions.ADD_LABEL_AFTER,
         ActionDescriptions.ADD_LABEL_BEFORE,
-        ActionDescriptions.DELETE
+        ActionDescriptions.DELETE,
+        ActionDescriptions.UNDO,
+        ActionDescriptions.REDO
     ];
 
     public KeyboardControls(ICollection<BoundAction> actionsCollection) {
@@ -90,6 +94,8 @@ public class KeyboardControls {
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_SQUASH, dataContext.ConvertToSquash),  new KeyCombination(false, false, Key.S)), 
             new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE, dataContext.ToggleVisualMode),    new KeyCombination(false, false, Key.V)), 
             new BoundAction(new NamedAction(ActionDescriptions.DELETE, dataContext.Delete),                   new KeyCombination(false, false, Key.Delete)), 
+            new BoundAction(new NamedAction(ActionDescriptions.UNDO, dataContext.Undo),                       new KeyCombination(false, false, Key.U)), 
+            new BoundAction(new NamedAction(ActionDescriptions.REDO, dataContext.Redo),                       new KeyCombination(false, true,  Key.R)), 
         });
     }
 
