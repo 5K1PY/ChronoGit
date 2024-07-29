@@ -22,7 +22,6 @@ public class MainWindowViewModel : ViewModelBase {
             this.RaiseAndSetIfChanged(ref _commands, value);
         }
     }
-
     public bool CommandsEmpty => !Commands.Any();
     public MainWindowViewModel() {
         var commits = Init.GetCommits();
@@ -47,7 +46,7 @@ public class MainWindowViewModel : ViewModelBase {
     }
     public int VisualModeStartPosition { get; private set; } = 0;
 
-    private int SelectedStart() {
+    public int SelectedStart() {
         if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
             return CurrentPosition;
         } else if (CurrentMode == Mode.VisualMode) {
@@ -56,7 +55,7 @@ public class MainWindowViewModel : ViewModelBase {
         throw new NotImplementedException();
     }
 
-    private int SelectedEnd() {
+    public int SelectedEnd() {
         if (Commands.Count == 0) return -1;
         if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
             return CurrentPosition;
@@ -66,11 +65,11 @@ public class MainWindowViewModel : ViewModelBase {
         throw new NotImplementedException();
     }
 
-    private int SelectedRangeLength() {
+    public int SelectedRangeLength() {
         return SelectedEnd() - SelectedStart() + 1;
     }
 
-    private IEnumerable<int> SelectedRange() {
+    public IEnumerable<int> SelectedRange() {
         for (int i = SelectedStart(); i <= SelectedEnd(); i++) {
             yield return i;
         }

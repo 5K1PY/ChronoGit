@@ -1,4 +1,5 @@
 using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using ChronoGit.ViewModels;
@@ -6,6 +7,8 @@ using ChronoGit.ViewModels;
 namespace ChronoGit.Views;
 
 public sealed partial class MainWindow : WindowBase {
+    const double ITEM_HEIGHT = 60.0;
+
     MainWindowViewModel? dataContext;
     ItemsControl? commandsView;
 
@@ -27,7 +30,27 @@ public sealed partial class MainWindow : WindowBase {
 
     protected override void WindowKeyDown(object sender, KeyEventArgs e) {
         base.WindowKeyDown(sender, e);
-        controls!.GetAction(GetCurrentKeyCombination(e.Key))?.Invoke();
+
+        NamedAction? action = controls!.GetAction(GetCurrentKeyCombination(e.Key));
+        action?.Action.Invoke();
+
+        ScrollViewer scrollCommands = this.FindControl<ScrollViewer>("ScrollCommandsView")!;
+        double height = scrollCommands.Bounds.Height;
+        double y_offset = scrollCommands.Offset.Y;
+
+        double top_position = dataContext!.SelectedStart() * ITEM_HEIGHT;
+        double bot_position = dataContext!.SelectedEnd() * ITEM_HEIGHT;
+        double position = dataContext!.CurrentPosition * ITEM_HEIGHT;
+
+        if (action?.ActionType == ActionType.ShiftUp) {
+            y_offset = Math.Min(y_offset, top_position - ITEM_HEIGHT);
+        } else if (action?.ActionType == ActionType.ShiftDown) {
+            y_offset = Math.Max(y_offset, bot_position - height + 2*ITEM_HEIGHT);
+        } else {
+            y_offset = Math.Min(Math.Max(position - height + ITEM_HEIGHT, y_offset), position);
+        }
+
+        scrollCommands.Offset = new Vector(scrollCommands.Offset.X, y_offset);
 
         // Can fail if Commands is empty
         Control? control = commandsView!.ContainerFromIndex(dataContext!.CurrentPosition);
