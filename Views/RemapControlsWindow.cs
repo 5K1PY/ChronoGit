@@ -26,6 +26,7 @@ public sealed partial class RemapControlsWindow : WindowBase {
         remappingButton = (sender as Button)!;
         remappingButton.Content = "Listening...";
         remappingPosition = dataContext!.Controls.IndexOf((remappingButton.DataContext as BoundAction)!);
+        FocusManager!.ClearFocus();
     }
 
     public void Cancel(object sender, RoutedEventArgs args) {
@@ -44,6 +45,7 @@ public sealed partial class RemapControlsWindow : WindowBase {
                 dataContext!.Controls[(int) remappingPosition].NamedAction,
                 keyComb
             );
+            remappingPosition = null;
         }
     }
 }
