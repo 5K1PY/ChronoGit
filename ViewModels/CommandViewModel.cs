@@ -2,13 +2,32 @@ using ReactiveUI;
 using LibGit2Sharp;
 using ChronoGit.Models;
 using System;
-using Avalonia.Media;
-using System.Reflection.Emit;
 
 namespace ChronoGit.ViewModels;
 
 public abstract partial class CommandViewModel : ViewModelBase {
     protected internal abstract Command Command { get; set; }
+
+    public static bool operator==(CommandViewModel? cvm1, CommandViewModel? cvm2) {
+        if (cvm1 is null) return (cvm1 is null && cvm2 is null);
+        return cvm1.Equals(cvm2);
+    }
+
+    public static bool operator!=(CommandViewModel? cvm1, CommandViewModel? cvm2) {
+        if (cvm1 is null) return !(cvm1 is null && cvm2 is null);
+        return !cvm1.Equals(cvm2);
+    }
+
+    public override bool Equals(object? obj) {
+        return (
+            GetType() == obj?.GetType() &&
+            Command == (obj as CommandViewModel)!.Command
+        );
+    }
+    public override int GetHashCode() {
+        // TODO
+        throw new NotImplementedException();
+    }
     private bool _selected = false;
     public bool Selected {
         get => _selected;
@@ -39,26 +58,32 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
 
 public sealed partial class PickViewModel(PickCommand pick) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = pick;
+    internal PickCommand PickCommand => (PickCommand) Command;
 }
 
 public sealed partial class RewordViewModel(RewordCommand reword) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = reword;
+    internal RewordCommand RewordCommand => (RewordCommand) Command;
 }
 
 public sealed partial class EditViewModel(EditCommand edit) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = edit;
+    internal EditCommand EditCommand => (EditCommand) Command;
 }
 
 public sealed partial class SquashViewModel(SquashCommand squash) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = squash;
+    internal SquashCommand SquashCommand => (SquashCommand) Command;
 }
 
 public sealed partial class FixupViewModel(FixupCommand fixup) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = fixup;
+    internal FixupCommand FixupCommand => (FixupCommand) Command;
 }
 
 public sealed partial class DropViewModel(DropCommand drop) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = drop;
+    internal DropCommand DropCommand => (DropCommand) Command;
 }
 
 public sealed partial class LabelViewModel : CommandViewModel {

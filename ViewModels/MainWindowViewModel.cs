@@ -18,7 +18,6 @@ public class MainWindowViewModel : ViewModelBase {
     public ObservableCollection<CommandViewModel> Commands {
         get => _commands;
         set {
-            Console.WriteLine("update");
             this.RaiseAndSetIfChanged(ref _commands, value);
         }
     }
@@ -152,9 +151,11 @@ public class MainWindowViewModel : ViewModelBase {
             history.RemoveRange(historyPosition, history.Count - historyPosition);
         }
 
-        RunAction(action.Change);
-        history.Add(action);
-        historyPosition++;
+        if (action.ChangesAnything) {
+            RunAction(action.Change);
+            history.Add(action);
+            historyPosition++;
+        }
     }
 
     public void Undo() {
