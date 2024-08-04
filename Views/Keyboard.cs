@@ -56,6 +56,7 @@ public static class ActionDescriptions {
 
 public class KeyboardControls {
     private readonly Dictionary<KeyCombination, NamedAction> actions;
+    public KeyCombination NormalModeKeyCombination { get; private init; }
  
     private static readonly ImmutableArray<string> actionOrder = [
         ActionDescriptions.NORMAL_MODE,
@@ -87,6 +88,10 @@ public class KeyboardControls {
         foreach (BoundAction boundAction in actionsCollection) {
             Debug.Assert(!actions.ContainsKey(boundAction.KeyCombination));
             actions[boundAction.KeyCombination] = boundAction.NamedAction;
+
+            if (boundAction.NamedAction.Name == ActionDescriptions.NORMAL_MODE) {
+                NormalModeKeyCombination = boundAction.KeyCombination;
+            }
         }
     }
 

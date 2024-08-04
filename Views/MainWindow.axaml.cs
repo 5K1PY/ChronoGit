@@ -29,7 +29,19 @@ public sealed partial class MainWindow : WindowBase {
     protected override void WindowKeyDown(object sender, KeyEventArgs e) {
         base.WindowKeyDown(sender, e);
 
-        NamedAction? action = controls!.GetAction(GetCurrentKeyCombination(e.Key));
+        KeyCombination currentKeyCombination = GetCurrentKeyCombination(e.Key);
+
+        if (
+            dataContext!.CurrentMode != Mode.InsertMode ||
+            currentKeyCombination.CtrlPressed || 
+            currentKeyCombination == controls!.NormalModeKeyCombination
+        ) {
+            e.Handled = true;
+        } else {
+            return;
+        }
+
+        NamedAction? action = controls!.GetAction(currentKeyCombination);
         action?.Action.Invoke();
 
         ScrollViewer scrollCommands = this.FindControl<ScrollViewer>("ScrollCommandsView")!;
@@ -51,6 +63,7 @@ public sealed partial class MainWindow : WindowBase {
         scrollCommands.Offset = new Vector(scrollCommands.Offset.X, y_offset);
 
         Control? control = commandsView!.ContainerFromIndex(dataContext!.CurrentPosition);
+        control?.UpdateLayout(); // FindDescendant doesn't work on not yet updated
         TextBox? FocusBox = control?.FindDescendant<TextBox>("FocusHere");
         if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
             FocusBox.Focus();
@@ -75,5 +88,6 @@ public sealed partial class MainWindow : WindowBase {
     }
 
     private void ChangeCommitColors(object sender, RoutedEventArgs e) {
+        // TODO
     }
 }
