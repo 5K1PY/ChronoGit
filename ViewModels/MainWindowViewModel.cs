@@ -34,7 +34,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         var commits = Init.GetCommits();
         _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
-            _commands.Add(new PickViewModel(action));
+            _commands.Add(new PickViewModel(action, CommitColor.Red));
         }
         _commands[0].Selected = true;
         Commands.CollectionChanged += (s, e) => this.RaisePropertyChanged(nameof(CommandsEmpty));
