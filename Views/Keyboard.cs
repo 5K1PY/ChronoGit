@@ -14,7 +14,8 @@ public record struct KeyCombination(bool ShiftPressed, bool CtrlPressed, Key Key
 }
 
 public enum ActionType {
-    ModeChange,
+    EnterMode,
+    ExitMode,
     Move,
     ShiftUp,
     ShiftDown,
@@ -62,8 +63,6 @@ public static class ActionDescriptions {
 
 public class KeyboardControls {
     private readonly Dictionary<KeyCombination, NamedAction> actions;
-    public KeyCombination NormalModeKeyCombination { get; private init; }
- 
     private static readonly ImmutableArray<string> actionOrder = [
         ActionDescriptions.NORMAL_MODE,
         ActionDescriptions.VISUAL_MODE,
@@ -100,18 +99,14 @@ public class KeyboardControls {
         foreach (BoundAction boundAction in actionsCollection) {
             Debug.Assert(!actions.ContainsKey(boundAction.KeyCombination));
             actions[boundAction.KeyCombination] = boundAction.NamedAction;
-
-            if (boundAction.NamedAction.Name == ActionDescriptions.NORMAL_MODE) {
-                NormalModeKeyCombination = boundAction.KeyCombination;
-            }
         }
     }
 
     public static KeyboardControls Default(MainWindowViewModel dataContext) {
         return new KeyboardControls(new List<BoundAction>{
-            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ModeChange, dataContext.NormalMode),       new KeyCombination(false, false, Key.Escape)), 
-            new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE,      ActionType.ModeChange, dataContext.ToggleVisualMode), new KeyCombination(false, false, Key.V)), 
-            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.ModeChange, dataContext.InsertMode),       new KeyCombination(false, false, Key.I)), 
+            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ExitMode,   dataContext.NormalMode),       new KeyCombination(false, false, Key.Escape)), 
+            new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE,      ActionType.EnterMode,  dataContext.ToggleVisualMode), new KeyCombination(false, false, Key.V)), 
+            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.EnterMode,  dataContext.InsertMode),       new KeyCombination(false, false, Key.I)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_UP,          ActionType.Move,       dataContext.MoveUp),           new KeyCombination(false, false, Key.Up)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_DOWN,        ActionType.Move,       dataContext.MoveDown),         new KeyCombination(false, false, Key.Down)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_TOP,         ActionType.Move,       dataContext.MoveToTop),        new KeyCombination(false, false, Key.Home)), 

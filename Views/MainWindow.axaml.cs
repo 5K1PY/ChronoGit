@@ -31,17 +31,18 @@ public sealed partial class MainWindow : WindowBase {
 
         KeyCombination currentKeyCombination = GetCurrentKeyCombination(e.Key);
 
+        NamedAction? action = controls!.GetAction(currentKeyCombination);
+
         if (
             dataContext!.CurrentMode != Mode.InsertMode ||
             currentKeyCombination.CtrlPressed || 
-            currentKeyCombination == controls!.NormalModeKeyCombination
+            action?.ActionType == ActionType.ExitMode
         ) {
             e.Handled = true;
         } else {
             return;
         }
 
-        NamedAction? action = controls!.GetAction(currentKeyCombination);
         action?.Action.Invoke();
 
         ScrollViewer scrollCommands = this.FindControl<ScrollViewer>("ScrollCommandsView")!;
