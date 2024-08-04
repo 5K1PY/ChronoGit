@@ -4,12 +4,12 @@ namespace ChronoGit.Models;
 
 public abstract class Command {
     public static bool operator==(Command? c1, Command? c2) {
-        if (c1 is null) return (c1 is null && c2 is null);
+        if (c1 is null) return c2 is null;
         return c1.Equals(c2);
     }
 
     public static bool operator!=(Command? c1, Command? c2) {
-        if (c1 is null) return !(c1 is null && c2 is null);
+        if (c1 is null) return !(c2 is null);
         return !c1.Equals(c2);
     }
 

@@ -1,7 +1,6 @@
 using ReactiveUI;
 using LibGit2Sharp;
 using ChronoGit.Models;
-using System;
 
 namespace ChronoGit.ViewModels;
 
@@ -9,15 +8,14 @@ public abstract partial class CommandViewModel : ViewModelBase {
     protected internal abstract Command Command { get; set; }
 
     public static bool operator==(CommandViewModel? cvm1, CommandViewModel? cvm2) {
-        if (cvm1 is null) return (cvm1 is null && cvm2 is null);
+        if (cvm1 is null) return cvm2 is null;
         return cvm1.Equals(cvm2);
     }
 
     public static bool operator!=(CommandViewModel? cvm1, CommandViewModel? cvm2) {
-        if (cvm1 is null) return !(cvm1 is null && cvm2 is null);
+        if (cvm1 is null) return !(cvm2 is null);
         return !cvm1.Equals(cvm2);
     }
-
     public override bool Equals(object? obj) {
         return (
             GetType() == obj?.GetType() &&
@@ -25,9 +23,9 @@ public abstract partial class CommandViewModel : ViewModelBase {
         );
     }
     public override int GetHashCode() {
-        // TODO
-        throw new NotImplementedException();
+        return Command.GetHashCode();
     }
+
     private bool _selected = false;
     public bool Selected {
         get => _selected;

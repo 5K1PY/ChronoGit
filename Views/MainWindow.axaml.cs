@@ -52,7 +52,6 @@ public sealed partial class MainWindow : WindowBase {
 
         scrollCommands.Offset = new Vector(scrollCommands.Offset.X, y_offset);
 
-        // Can fail if Commands is empty
         Control? control = commandsView!.ContainerFromIndex(dataContext!.CurrentPosition);
         TextBox? FocusBox = control?.FindDescendant<TextBox>("FocusHere");
         if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
