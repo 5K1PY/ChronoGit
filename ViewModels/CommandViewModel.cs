@@ -83,6 +83,18 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
     }
     public string IconPath => $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
 }
+public abstract partial class ArgumentCommandViewModel : CommandViewModel {
+    protected internal ArgumentCommand ArgumentCommand => (ArgumentCommand) Command;
+    public string Argument {
+        get => ArgumentCommand.Argument;
+        set {
+            if (ArgumentCommand.Argument != value) {
+                ArgumentCommand.Argument = value;
+                this.RaisePropertyChanged(Argument);
+            }
+        }
+    }
+}
 
 public sealed partial class PickViewModel(PickCommand pick) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = pick;
@@ -120,24 +132,19 @@ public sealed partial class DropViewModel(DropCommand drop) : CommitCommandViewM
     protected override string IconFilePrefix { get; init; } = "drop";
 }
 
-public sealed partial class ExecViewModel : CommandViewModel {
+public sealed partial class ExecViewModel : ArgumentCommandViewModel {
     protected internal override Command Command { get; set; }
     internal ExecCommand ExecCommand => (ExecCommand) Command;
     public ExecViewModel() {
         Command = new ExecCommand("");
     }
 
-    public ExecViewModel(ExecCommand label) {
-        Command = label;
-    }
-
-    public string Script {
-        get => ExecCommand.Script;
-        set => this.RaiseAndSetIfChanged(ref ExecCommand.Script, value);
+    public ExecViewModel(ExecCommand exec) {
+        Command = exec;
     }
 }
 
-public sealed partial class LabelViewModel : CommandViewModel {
+public sealed partial class LabelViewModel : ArgumentCommandViewModel {
     protected internal override Command Command { get; set; }
     internal LabelCommand LabelCommand => (LabelCommand) Command;
     public LabelViewModel() {
@@ -147,14 +154,9 @@ public sealed partial class LabelViewModel : CommandViewModel {
     public LabelViewModel(LabelCommand label) {
         Command = label;
     }
-
-    public string Label {
-        get => LabelCommand.Label;
-        set => this.RaiseAndSetIfChanged(ref LabelCommand.Label, value);
-    }
 }
 
-public sealed partial class ResetViewModel : CommandViewModel {
+public sealed partial class ResetViewModel : ArgumentCommandViewModel {
     protected internal override Command Command { get; set; }
     internal ResetCommand ResetCommand => (ResetCommand) Command;
     public ResetViewModel() {
@@ -164,14 +166,9 @@ public sealed partial class ResetViewModel : CommandViewModel {
     public ResetViewModel(ResetCommand reset) {
         Command = reset;
     }
-
-    public string Label {
-        get => ResetCommand.Label;
-        set => this.RaiseAndSetIfChanged(ref ResetCommand.Label, value);
-    }
 }
 
-public sealed partial class MergeViewModel : CommandViewModel {
+public sealed partial class MergeViewModel : ArgumentCommandViewModel {
     protected internal override Command Command { get; set; }
     internal MergeCommand MergeCommand => (MergeCommand) Command;
     public MergeViewModel() {
@@ -180,11 +177,6 @@ public sealed partial class MergeViewModel : CommandViewModel {
 
     public MergeViewModel(MergeCommand merge) {
         Command = merge;
-    }
-
-    public string Label {
-        get => MergeCommand.Label;
-        set => this.RaiseAndSetIfChanged(ref MergeCommand.Label, value);
     }
 }
 
