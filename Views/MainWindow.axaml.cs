@@ -43,12 +43,14 @@ public sealed partial class MainWindow : WindowBase {
             return;
         }
 
-        action?.Action.Invoke();
-
         ScrollViewer scrollCommands = this.FindControl<ScrollViewer>("ScrollCommandsView")!;
         double height = scrollCommands.Bounds.Height;
-        double y_offset = scrollCommands.Offset.Y;
+        int commandsPerPage = (int) (height / ITEM_HEIGHT);
 
+        action?.Action.Invoke(new ViewData(commandsPerPage));
+
+
+        double y_offset = scrollCommands.Offset.Y;
         double top_position = dataContext!.SelectedStart() * ITEM_HEIGHT;
         double bot_position = dataContext!.SelectedEnd() * ITEM_HEIGHT;
         double position = dataContext!.CurrentPosition * ITEM_HEIGHT;
@@ -61,7 +63,13 @@ public sealed partial class MainWindow : WindowBase {
             y_offset = Math.Min(Math.Max(position - height + ITEM_HEIGHT, y_offset), position);
         }
 
-        scrollCommands.Offset = new Vector(scrollCommands.Offset.X, y_offset);
+        if (action?.Name == ActionDescriptions.MOVE_PAGE_UP) {
+            scrollCommands.Offset -= new Vector(0, commandsPerPage * ITEM_HEIGHT);
+        } else if (action?.Name == ActionDescriptions.MOVE_PAGE_DOWN) {
+            scrollCommands.Offset += new Vector(0, commandsPerPage * ITEM_HEIGHT);
+        } else {
+            scrollCommands.Offset = new Vector(scrollCommands.Offset.X, y_offset);
+        }
 
         Control? control = commandsView!.ContainerFromIndex(dataContext!.CurrentPosition);
         control?.UpdateLayout(); // FindDescendant doesn't work on not yet updated

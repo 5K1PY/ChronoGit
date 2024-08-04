@@ -26,7 +26,7 @@ public enum ActionType {
     Color,
 }
 
-public record class NamedAction(string Name, ActionType ActionType, Action Action);
+public record class NamedAction(string Name, ActionType ActionType, Action<ViewData> Action);
 
 public record class BoundAction(NamedAction NamedAction, KeyCombination KeyCombination);
 
@@ -34,6 +34,8 @@ public static class ActionDescriptions {
     public const string NORMAL_MODE = "Enter normal mode";
     public const string MOVE_UP = "Move up";
     public const string MOVE_DOWN = "Move down";
+    public const string MOVE_PAGE_UP = "Move page up";
+    public const string MOVE_PAGE_DOWN = "Move page down";
     public const string MOVE_TOP = "Move to top";
     public const string MOVE_BOTTOM = "Move to bottom";
     public const string CONVERT_DROP = "Convert selection to drop";
@@ -104,11 +106,13 @@ public class KeyboardControls {
 
     public static KeyboardControls Default(MainWindowViewModel dataContext) {
         return new KeyboardControls(new List<BoundAction>{
-            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ExitMode,   dataContext.NormalMode),       new KeyCombination(false, false, Key.Escape)), 
+            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ExitMode,   dataContext.ExitCurrentMode),  new KeyCombination(false, false, Key.Escape)), 
             new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE,      ActionType.EnterMode,  dataContext.ToggleVisualMode), new KeyCombination(false, false, Key.V)), 
-            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.EnterMode,  dataContext.InsertMode),       new KeyCombination(false, false, Key.I)), 
+            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.EnterMode,  dataContext.EnterInsertMode),  new KeyCombination(false, false, Key.I)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_UP,          ActionType.Move,       dataContext.MoveUp),           new KeyCombination(false, false, Key.Up)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_DOWN,        ActionType.Move,       dataContext.MoveDown),         new KeyCombination(false, false, Key.Down)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_UP,     ActionType.Move,       dataContext.MovePageUp),       new KeyCombination(false, false, Key.PageUp)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_DOWN,   ActionType.Move,       dataContext.MovePageDown),     new KeyCombination(false, false, Key.PageDown)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_TOP,         ActionType.Move,       dataContext.MoveToTop),        new KeyCombination(false, false, Key.Home)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_BOTTOM,      ActionType.Move,       dataContext.MoveToBottom),     new KeyCombination(false, false, Key.End)), 
             new BoundAction(new NamedAction(ActionDescriptions.SHIFT_UP,         ActionType.ShiftUp,    dataContext.ShiftUp),          new KeyCombination(false, false, Key.K)), 
