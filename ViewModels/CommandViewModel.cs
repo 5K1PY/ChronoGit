@@ -1,8 +1,20 @@
 using ReactiveUI;
 using LibGit2Sharp;
 using ChronoGit.Models;
+using System;
 
 namespace ChronoGit.ViewModels;
+
+public enum CommitColor {
+    Blue,
+    Cyan,
+    Green,
+    Orange,
+    Pink,
+    Purple,
+    Red,
+    Yellow
+}
 
 public abstract partial class CommandViewModel : ViewModelBase {
     protected internal abstract Command Command { get; set; }
@@ -52,36 +64,54 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
             return string.Format("{0} <{1}>", author.Name, author.Email);
         }
     }
+
+    protected abstract string IconFilePrefix { get; init; }
+    private CommitColor _color = CommitColor.Red;
+    public CommitColor Color {
+        get => _color;
+        set => this.RaiseAndSetIfChanged(ref _color, value);
+    }
+    public string IconPath {get {
+        string a = $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
+        Console.WriteLine(a);
+        return a;
+    }}
 }
 
 public sealed partial class PickViewModel(PickCommand pick) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = pick;
     internal PickCommand PickCommand => (PickCommand) Command;
+    protected override string IconFilePrefix { get; init; } = "pick";
 }
 
 public sealed partial class RewordViewModel(RewordCommand reword) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = reword;
     internal RewordCommand RewordCommand => (RewordCommand) Command;
+    protected override string IconFilePrefix { get; init; } = "reword";
 }
 
 public sealed partial class EditViewModel(EditCommand edit) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = edit;
     internal EditCommand EditCommand => (EditCommand) Command;
+    protected override string IconFilePrefix { get; init; } = "edit";
 }
 
 public sealed partial class SquashViewModel(SquashCommand squash) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = squash;
     internal SquashCommand SquashCommand => (SquashCommand) Command;
+    protected override string IconFilePrefix { get; init; } = "squash";
 }
 
 public sealed partial class FixupViewModel(FixupCommand fixup) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = fixup;
     internal FixupCommand FixupCommand => (FixupCommand) Command;
+    protected override string IconFilePrefix { get; init; } = "fixup";
 }
 
 public sealed partial class DropViewModel(DropCommand drop) : CommitCommandViewModel {
     protected internal override Command Command { get; set; } = drop;
     internal DropCommand DropCommand => (DropCommand) Command;
+    protected override string IconFilePrefix { get; init; } = "drop";
 }
 
 public sealed partial class LabelViewModel : CommandViewModel {
