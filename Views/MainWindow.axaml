@@ -39,8 +39,8 @@
                    Text="No commands left." IsVisible="{Binding CommandsEmpty}"/>
         <Border Grid.Row="2" BorderBrush="Black" BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="10, *, Auto, 10">
-                <TextBlock Grid.Column="1" Text="{Binding CurrentMode}"/>
-                <TextBlock Grid.Column="2" Text="{Binding CurrentPosition}"/>
+                <TextBlock Grid.Column="1" Text="{Binding CurrentMode}" FontSize="16"/>
+                <TextBlock Grid.Column="2" Text="{Binding CurrentPosition}" FontSize="16"/>
             </Grid>
         </Border>
     </Grid>
