@@ -43,6 +43,8 @@ public static class ActionDescriptions {
     public const string SHIFT_UP = "Shift selection up";
     public const string ADD_LABEL_AFTER = "Add label after selection";
     public const string ADD_LABEL_BEFORE = "Add label before selection";
+    public const string ADD_RESET_AFTER = "Add reset after selection";
+    public const string ADD_RESET_BEFORE = "Add reset before selection";
     public const string CONVERT_PICK = "Convert selection to pick";
     public const string CONVERT_REWORD = "Convert selection to reword";
     public const string CONVERT_SQUASH = "Convert selection to squash";
@@ -76,6 +78,8 @@ public class KeyboardControls {
         ActionDescriptions.CONVERT_DROP,
         ActionDescriptions.ADD_LABEL_AFTER,
         ActionDescriptions.ADD_LABEL_BEFORE,
+        ActionDescriptions.ADD_RESET_AFTER,
+        ActionDescriptions.ADD_RESET_BEFORE,
         ActionDescriptions.DELETE,
         ActionDescriptions.UNDO,
         ActionDescriptions.REDO,
@@ -114,6 +118,8 @@ public class KeyboardControls {
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_DROP,     ActionType.Convert,    dataContext.ConvertToDrop),    new KeyCombination(false, false, Key.D)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_AFTER,  ActionType.Insert,     dataContext.AddLabelAfter),    new KeyCombination(false, false, Key.L)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_BEFORE, ActionType.Insert,     dataContext.AddLabelBefore),   new KeyCombination(true,  false, Key.L)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_AFTER,  ActionType.Insert,     dataContext.AddResetAfter),    new KeyCombination(false, false, Key.T)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_BEFORE, ActionType.Insert,     dataContext.AddResetBefore),   new KeyCombination(true,  false, Key.T)), 
             new BoundAction(new NamedAction(ActionDescriptions.DELETE,           ActionType.Delete,     dataContext.Delete),           new KeyCombination(false, false, Key.Delete)), 
             new BoundAction(new NamedAction(ActionDescriptions.UNDO,             ActionType.History,    dataContext.Undo),             new KeyCombination(false, false, Key.U)), 
             new BoundAction(new NamedAction(ActionDescriptions.REDO,             ActionType.History,    dataContext.Redo),             new KeyCombination(false, true,  Key.R)), 

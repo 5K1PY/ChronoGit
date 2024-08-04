@@ -281,6 +281,16 @@ public sealed class MainWindowViewModel : ViewModelBase {
         InsertMode();
     }
 
+    public void AddResetBefore() {
+        InsertBefore(new ResetViewModel());
+        InsertMode();
+    }
+
+    public void AddResetAfter() {
+        InsertAfter(new ResetViewModel());
+        InsertMode();
+    }
+
     // Colors
 
     private void ColorBy<T>(Func<CommitCommandViewModel, T> getGroup) where T : notnull {

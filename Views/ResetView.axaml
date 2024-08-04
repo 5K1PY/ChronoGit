@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ChronoGit.ViewModels"
              xmlns:m="using:ChronoGit.Models"
-             x:Class="ChronoGit.Views.LabelView"
-             x:DataType="vm:LabelViewModel">
+             x:Class="ChronoGit.Views.ResetView"
+             x:DataType="vm:ResetViewModel">
 
     <UserControl.Resources>
         <vm:SelectionToColorConverter x:Key="SelectionToColorConverter"/>
@@ -12,7 +12,7 @@
     <Grid RowDefinitions="10,Auto,Auto,10" ColumnDefinitions="60,10,100,Auto"
           Background="{Binding Selected, Converter={StaticResource SelectionToColorConverter}}">
 
-        <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Width="60" Path="/Assets/label.svg"/>
+        <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Width="60" Path="/Assets/reset.svg"/>
         <TextBox Name="FocusHere" Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" HorizontalAlignment="Left" MinWidth="110"
                  Text="{Binding Label}" Watermark="Enter label" FontSize="16"/>
     </Grid>

@@ -69,8 +69,19 @@ public sealed class LabelCommand(string label) : Command {
     }
 }
 
-public sealed class ResetCommand(string label) {
-    public string Label { get; set; } = label;
+public sealed class ResetCommand(string label) : Command {
+    public string Label = label;
+
+    public override bool Equals(object? obj) {
+        return (
+            GetType() == obj?.GetType() &&
+            Label == (obj as ResetCommand)!.Label
+        );
+    }
+
+    public override int GetHashCode() {
+        return Label.GetHashCode();
+    }
 }
 
 public sealed class MergeCommand(string label) {

@@ -137,6 +137,23 @@ public sealed partial class LabelViewModel : CommandViewModel {
     }
 }
 
+public sealed partial class ResetViewModel : CommandViewModel {
+    protected internal override Command Command { get; set; }
+    internal ResetCommand ResetCommand => (ResetCommand) Command;
+    public ResetViewModel() {
+        Command = new ResetCommand("");
+    }
+
+    public ResetViewModel(ResetCommand reset) {
+        Command = reset;
+    }
+
+    public string Label {
+        get => ResetCommand.Label;
+        set => this.RaiseAndSetIfChanged(ref ResetCommand.Label, value);
+    }
+}
+
 public static class CommitCommandConversions {
     public static PickViewModel ToPick(this CommitCommandViewModel ccvm) {
         return new PickViewModel(new PickCommand(ccvm.CommitCommand.CommandCommit));
