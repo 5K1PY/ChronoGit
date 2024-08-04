@@ -61,6 +61,7 @@ public static class ActionDescriptions {
     public const string REDO = "Redo";
     public const string COLOR_SAME = "Color all commits same";
     public const string COLOR_BY_AUTHOR = "Color commits by author";
+    public const string COLOR_BY_DATE = "Color commits by date";
 }
 
 public class KeyboardControls {
@@ -94,6 +95,7 @@ public class KeyboardControls {
         ActionDescriptions.REDO,
         ActionDescriptions.COLOR_SAME,
         ActionDescriptions.COLOR_BY_AUTHOR,
+        ActionDescriptions.COLOR_BY_DATE,
     ];
 
     public KeyboardControls(ICollection<BoundAction> actionsCollection) {
@@ -136,6 +138,7 @@ public class KeyboardControls {
             new BoundAction(new NamedAction(ActionDescriptions.REDO,             ActionType.History,    dataContext.Redo),             new KeyCombination(false, true,  Key.R)), 
             new BoundAction(new NamedAction(ActionDescriptions.COLOR_SAME,       ActionType.Color,      dataContext.ColorSame),        new KeyCombination(false, true,  Key.S)), 
             new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_AUTHOR,  ActionType.Color,      dataContext.ColorByAuthor),    new KeyCombination(false, true,  Key.A)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_DATE,    ActionType.Color,      dataContext.ColorByDate),      new KeyCombination(false, true,  Key.D)), 
         });
     }
 

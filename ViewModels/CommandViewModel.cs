@@ -68,6 +68,8 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
     public string Author => CommitCommand.CommandCommit.Author.ToString();
     public string AuthorEmail => CommitCommand.CommandCommit.Author.Email.ToString();
     public string FullAuthor => string.Format("{0} <{1}>", Author, AuthorEmail);
+    private DateTimeOffset dateTimeOffset => CommitCommand.CommandCommit.Author.When;
+    public string Date => dateTimeOffset.ToString("yyyy-MM-dd");
 
     protected abstract string IconFilePrefix { get; init; }
     private CommitColor _color = CommitColor.Red;

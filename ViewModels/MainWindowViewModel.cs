@@ -365,4 +365,8 @@ public sealed class MainWindowViewModel : ViewModelBase {
     public void ColorByAuthor(ViewData _) {
         ColorBy(ccvm => ccvm.Author);
     }
+
+    public void ColorByDate(ViewData _) {
+        ColorBy(ccvm => ccvm.Date);
+    }
 }
