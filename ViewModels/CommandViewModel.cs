@@ -90,7 +90,7 @@ public abstract partial class ArgumentCommandViewModel : CommandViewModel {
         set {
             if (ArgumentCommand.Argument != value) {
                 ArgumentCommand.Argument = value;
-                this.RaisePropertyChanged(Argument);
+                this.RaisePropertyChanged(nameof(Argument));
             }
         }
     }

@@ -22,9 +22,9 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
     private IEnumerable<CommitCommandViewModel> CommitCommands() {
-        foreach (CommitCommandViewModel? ccvm in Commands) {
-            if (ccvm is not null)
-                yield return ccvm;
+        foreach (CommandViewModel cvm in Commands) {
+            if (cvm is CommitCommandViewModel model)
+                yield return model;
         }
     }
     public bool CommandsEmpty => !Commands.Any();
@@ -50,6 +50,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _currentPosition, value);
     }
     public int VisualModeStartPosition { get; private set; } = 0;
+    private string BeforeInsertModeArgument = "";
 
     public int SelectedStart() {
         if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
@@ -87,6 +88,12 @@ public sealed class MainWindowViewModel : ViewModelBase {
                     Commands[i].Selected = false;
                 }
             }
+        } else if (CurrentMode == Mode.InsertMode) {
+            Act(new ChangeArgumentLog(
+                CurrentPosition,
+                BeforeInsertModeArgument,
+                (Commands[CurrentPosition] as ArgumentCommandViewModel)!.Argument
+            ));
         }
         CurrentMode = Mode.NormalMode;
     }
@@ -101,7 +108,13 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     public void InsertMode() {
-        CurrentMode = Mode.InsertMode;
+        if (CurrentMode != Mode.NormalMode) return;
+
+        ArgumentCommandViewModel? acvm = Commands[CurrentPosition] as ArgumentCommandViewModel;
+        if (acvm is not null) {
+            CurrentMode = Mode.InsertMode;
+            BeforeInsertModeArgument = acvm.Argument;
+        }
     }
 
     private void MovePositionTo(int targetPosition) {
