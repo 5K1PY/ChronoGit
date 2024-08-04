@@ -55,6 +55,20 @@ public sealed class DropCommand(Commit commit) : CommitCommand {
     public override Commit CommandCommit { get; set; } = commit;
 }
 
+public sealed class ExecCommand(string script) : Command {
+    public string Script = script;
+    public override bool Equals(object? obj) {
+        return (
+            GetType() == obj?.GetType() &&
+            Script == (obj as ExecCommand)!.Script
+        );
+    }
+
+    public override int GetHashCode() {
+        return Script.GetHashCode();
+    }
+}
+
 public sealed class LabelCommand(string label) : Command {
     public string Label = label;
     public override bool Equals(object? obj) {

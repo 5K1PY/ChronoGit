@@ -271,6 +271,16 @@ public sealed class MainWindowViewModel : ViewModelBase {
         InsertAndMoveTo(cvm, SelectedEnd()+1);
     }
 
+    public void AddExecBefore() {
+        InsertBefore(new ExecViewModel());
+        InsertMode();
+    }
+
+    public void AddExecAfter() {
+        InsertAfter(new ExecViewModel());
+        InsertMode();
+    }
+
     public void AddLabelBefore() {
         InsertBefore(new LabelViewModel());
         InsertMode();

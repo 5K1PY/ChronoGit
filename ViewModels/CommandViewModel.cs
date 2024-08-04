@@ -120,6 +120,23 @@ public sealed partial class DropViewModel(DropCommand drop) : CommitCommandViewM
     protected override string IconFilePrefix { get; init; } = "drop";
 }
 
+public sealed partial class ExecViewModel : CommandViewModel {
+    protected internal override Command Command { get; set; }
+    internal ExecCommand ExecCommand => (ExecCommand) Command;
+    public ExecViewModel() {
+        Command = new ExecCommand("");
+    }
+
+    public ExecViewModel(ExecCommand label) {
+        Command = label;
+    }
+
+    public string Script {
+        get => ExecCommand.Script;
+        set => this.RaiseAndSetIfChanged(ref ExecCommand.Script, value);
+    }
+}
+
 public sealed partial class LabelViewModel : CommandViewModel {
     protected internal override Command Command { get; set; }
     internal LabelCommand LabelCommand => (LabelCommand) Command;
