@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using ChronoGit.ViewModels;
 
 namespace ChronoGit.Views;
@@ -16,9 +17,6 @@ public sealed partial class MainWindow : WindowBase {
 
     public MainWindow() {
         InitializeComponent();
-
-        MenuItem remapControls = this.FindControl<MenuItem>("RemapControls")!;
-        remapControls.PointerPressed += RemapControls_PointerPressed;
     }
 
     protected override void OnOpened(EventArgs e) {
@@ -65,7 +63,7 @@ public sealed partial class MainWindow : WindowBase {
         // TODO
     }
 
-    private async void RemapControls_PointerPressed(object? sender, PointerPressedEventArgs e) {
+    private async void RemapControls(object sender, RoutedEventArgs e) {
         RemapControlsWindow window = new() {
             DataContext = new RemapControlsViewModel(controls!.Export())
         };
@@ -74,5 +72,8 @@ public sealed partial class MainWindow : WindowBase {
             controls = keyboardControls;
             SaveConfiguration();
         }
+    }
+
+    private void ChangeCommitColors(object sender, RoutedEventArgs e) {
     }
 }

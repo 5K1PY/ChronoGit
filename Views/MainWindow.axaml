@@ -23,7 +23,10 @@
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Preferences">
-                <MenuItem Name="RemapControls" Header="_RemapControls"/>
+                <MenuItem Header="_Remap controls" Click="RemapControls"/>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="_Commit colors" Click="ChangeCommitColors"/>
             </MenuItem>
             </Menu>
         </DockPanel>

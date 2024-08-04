@@ -6,14 +6,20 @@ using System;
 namespace ChronoGit.ViewModels;
 
 public enum CommitColor {
-    Blue,
-    Cyan,
-    Green,
-    Orange,
-    Pink,
-    Purple,
-    Red,
-    Yellow
+    Red = 0,
+    Orange = 1,
+    Yellow = 2,
+    Green = 3,
+    Cyan = 4,
+    Blue = 5,
+    Purple = 6,
+    Pink = 7,
+}
+
+public static class CommitColorExtensions {
+    public static CommitColor Next(this CommitColor color) {
+        return (CommitColor) (((int) color + 1) % Enum.GetValues(typeof(CommitColor)).Length);
+    }
 }
 
 public abstract partial class CommandViewModel : ViewModelBase {
@@ -55,27 +61,27 @@ public abstract partial class CommandViewModel : ViewModelBase {
 
 public abstract partial class CommitCommandViewModel : CommandViewModel {
     protected internal CommitCommand CommitCommand => (CommitCommand) Command;
+
     public string Id => CommitCommand.CommandCommit.Id.ToString().Substring(0, 7);
     public string Message => CommitCommand.CommandCommit.Message;
     public string MessageShort => CommitCommand.CommandCommit.MessageShort;
-    public string Author {
-        get {
-            Signature author = CommitCommand.CommandCommit.Author;
-            return string.Format("{0} <{1}>", author.Name, author.Email);
-        }
-    }
+    public string Author => CommitCommand.CommandCommit.Author.ToString();
+    public string AuthorEmail => CommitCommand.CommandCommit.Author.Email.ToString();
+    public string FullAuthor => string.Format("{0} <{1}>", Author, AuthorEmail);
 
     protected abstract string IconFilePrefix { get; init; }
     private CommitColor _color = CommitColor.Red;
     public CommitColor Color {
         get => _color;
-        set => this.RaiseAndSetIfChanged(ref _color, value);
+        set {
+            if (_color != value) {
+                _color = value;
+                this.RaisePropertyChanged(nameof(Color));
+                this.RaisePropertyChanged(nameof(IconPath));
+            }
+        }
     }
-    public string IconPath {get {
-        string a = $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
-        Console.WriteLine(a);
-        return a;
-    }}
+    public string IconPath => $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
 }
 
 public sealed partial class PickViewModel(PickCommand pick) : CommitCommandViewModel {

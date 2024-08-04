@@ -21,7 +21,8 @@ public enum ActionType {
     Convert,
     Insert,
     Delete,
-    History
+    History,
+    Color,
 }
 
 public record class NamedAction(string Name, ActionType ActionType, Action Action);
@@ -49,6 +50,8 @@ public static class ActionDescriptions {
     public const string DELETE = "Delete selection";
     public const string UNDO = "Undo";
     public const string REDO = "Redo";
+    public const string COLOR_SAME = "Color all commits same";
+    public const string COLOR_BY_AUTHOR = "Color commits by author";
 }
 
 public class KeyboardControls {
@@ -74,7 +77,9 @@ public class KeyboardControls {
         ActionDescriptions.ADD_LABEL_BEFORE,
         ActionDescriptions.DELETE,
         ActionDescriptions.UNDO,
-        ActionDescriptions.REDO
+        ActionDescriptions.REDO,
+        ActionDescriptions.COLOR_SAME,
+        ActionDescriptions.COLOR_BY_AUTHOR,
     ];
 
     public KeyboardControls(ICollection<BoundAction> actionsCollection) {
@@ -107,6 +112,8 @@ public class KeyboardControls {
             new BoundAction(new NamedAction(ActionDescriptions.DELETE,           ActionType.Delete,     dataContext.Delete),           new KeyCombination(false, false, Key.Delete)), 
             new BoundAction(new NamedAction(ActionDescriptions.UNDO,             ActionType.History,    dataContext.Undo),             new KeyCombination(false, false, Key.U)), 
             new BoundAction(new NamedAction(ActionDescriptions.REDO,             ActionType.History,    dataContext.Redo),             new KeyCombination(false, true,  Key.R)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COLOR_SAME,       ActionType.Color,      dataContext.ColorSame),        new KeyCombination(false, true,  Key.S)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_AUTHOR,  ActionType.Color,      dataContext.ColorByAuthor),    new KeyCombination(false, true,  Key.A)), 
         });
     }
 

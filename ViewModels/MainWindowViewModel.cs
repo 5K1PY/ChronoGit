@@ -13,12 +13,18 @@ public enum Mode {
     VisualMode
 };
 
-public class MainWindowViewModel : ViewModelBase {
+public sealed class MainWindowViewModel : ViewModelBase {
     private ObservableCollection<CommandViewModel> _commands;
     public ObservableCollection<CommandViewModel> Commands {
         get => _commands;
         set {
             this.RaiseAndSetIfChanged(ref _commands, value);
+        }
+    }
+    private IEnumerable<CommitCommandViewModel> CommitCommands() {
+        foreach (CommitCommandViewModel? ccvm in Commands) {
+            if (ccvm is not null)
+                yield return ccvm;
         }
     }
     public bool CommandsEmpty => !Commands.Any();
@@ -273,5 +279,29 @@ public class MainWindowViewModel : ViewModelBase {
     public void AddLabelAfter() {
         InsertAfter(new LabelViewModel());
         InsertMode();
+    }
+
+    // Colors
+
+    private void ColorBy<T>(Func<CommitCommandViewModel, T> getGroup) where T : notnull {
+        CommitColor currentColor = 0;
+        Dictionary<T, CommitColor> getColor = [];
+
+        foreach (CommitCommandViewModel ccvm in CommitCommands()) {
+            T key = getGroup(ccvm);
+            if (!getColor.ContainsKey(key)) {
+                getColor[key] = currentColor;
+                currentColor = currentColor.Next();
+            }
+            ccvm.Color = getColor[key];
+        }
+    }
+
+    public void ColorSame() {
+        ColorBy(_ => CommitColor.Red);
+    }
+
+    public void ColorByAuthor() {
+        ColorBy(ccvm => ccvm.Author);
     }
 }
