@@ -154,6 +154,23 @@ public sealed partial class ResetViewModel : CommandViewModel {
     }
 }
 
+public sealed partial class MergeViewModel : CommandViewModel {
+    protected internal override Command Command { get; set; }
+    internal MergeCommand MergeCommand => (MergeCommand) Command;
+    public MergeViewModel() {
+        Command = new MergeCommand("");
+    }
+
+    public MergeViewModel(MergeCommand merge) {
+        Command = merge;
+    }
+
+    public string Label {
+        get => MergeCommand.Label;
+        set => this.RaiseAndSetIfChanged(ref MergeCommand.Label, value);
+    }
+}
+
 public static class CommitCommandConversions {
     public static PickViewModel ToPick(this CommitCommandViewModel ccvm) {
         return new PickViewModel(new PickCommand(ccvm.CommitCommand.CommandCommit));

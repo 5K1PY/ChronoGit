@@ -291,6 +291,16 @@ public sealed class MainWindowViewModel : ViewModelBase {
         InsertMode();
     }
 
+    public void AddMergeBefore() {
+        InsertBefore(new MergeViewModel());
+        InsertMode();
+    }
+
+    public void AddMergeAfter() {
+        InsertAfter(new MergeViewModel());
+        InsertMode();
+    }
+
     // Colors
 
     private void ColorBy<T>(Func<CommitCommandViewModel, T> getGroup) where T : notnull {
