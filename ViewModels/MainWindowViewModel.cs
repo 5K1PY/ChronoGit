@@ -30,11 +30,13 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
     public bool CommandsEmpty => !Commands.Any();
+
+    public CommitColor DefaultCommitColor = CommitColor.Red;
     public MainWindowViewModel() {
         var commits = Init.GetCommits();
         _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
-            _commands.Add(new PickViewModel(action, CommitColor.Red));
+            _commands.Add(new PickViewModel(action, DefaultCommitColor));
         }
         _commands[0].Selected = true;
         Commands.CollectionChanged += (s, e) => this.RaisePropertyChanged(nameof(CommandsEmpty));
@@ -343,6 +345,11 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     // Colors
+    public void ColorSame(ViewData _) {
+        foreach (CommitCommandViewModel ccvm in CommitCommands()) {
+            ccvm.Color = DefaultCommitColor;
+        }
+    }
 
     private void ColorBy<T>(Func<CommitCommandViewModel, T> getGroup) where T : notnull {
         CommitColor currentColor = 0;
@@ -358,15 +365,15 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void ColorSame(ViewData _) {
-        ColorBy(_ => CommitColor.Red);
-    }
-
     public void ColorByAuthor(ViewData _) {
         ColorBy(ccvm => ccvm.Author);
     }
 
     public void ColorByDate(ViewData _) {
         ColorBy(ccvm => ccvm.Date);
+    }
+
+    public void ColorByRegex(ViewData _, string regex, IEnumerable<int> groups) {
+
     }
 }

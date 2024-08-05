@@ -11,7 +11,6 @@ public sealed partial class MainWindow : WindowBase {
     const double ITEM_HEIGHT = 60.0;
 
     MainWindowViewModel? dataContext;
-    ItemsControl? commandsView;
 
     KeyboardControls? controls;
 
@@ -22,8 +21,11 @@ public sealed partial class MainWindow : WindowBase {
     protected override void OnOpened(EventArgs e) {
         base.OnOpened(e);
         dataContext = (DataContext as MainWindowViewModel)!;
-        commandsView = this.FindControl<ItemsControl>("CommandsView")!;
         controls = KeyboardControls.Default(dataContext);
+    }
+
+    private ViewData GetViewData() {
+        return new ViewData((int) (ScrollCommands.Bounds.Height / ITEM_HEIGHT));
     }
 
     protected override void WindowKeyDown(object sender, KeyEventArgs e) {
@@ -43,14 +45,11 @@ public sealed partial class MainWindow : WindowBase {
             return;
         }
 
-        ScrollViewer scrollCommands = this.FindControl<ScrollViewer>("ScrollCommandsView")!;
-        double height = scrollCommands.Bounds.Height;
+        action?.Action.Invoke(GetViewData());
+
+        double height = ScrollCommands.Bounds.Height;
         int commandsPerPage = (int) (height / ITEM_HEIGHT);
-
-        action?.Action.Invoke(new ViewData(commandsPerPage));
-
-
-        double y_offset = scrollCommands.Offset.Y;
+        double y_offset = ScrollCommands.Offset.Y;
         double top_position = dataContext!.SelectedStart() * ITEM_HEIGHT;
         double bot_position = dataContext!.SelectedEnd() * ITEM_HEIGHT;
         double position = dataContext!.CurrentPosition * ITEM_HEIGHT;
@@ -64,14 +63,14 @@ public sealed partial class MainWindow : WindowBase {
         }
 
         if (action?.Name == ActionDescriptions.MOVE_PAGE_UP) {
-            scrollCommands.Offset -= new Vector(0, commandsPerPage * ITEM_HEIGHT);
+            ScrollCommands.Offset -= new Vector(0, commandsPerPage * ITEM_HEIGHT);
         } else if (action?.Name == ActionDescriptions.MOVE_PAGE_DOWN) {
-            scrollCommands.Offset += new Vector(0, commandsPerPage * ITEM_HEIGHT);
+            ScrollCommands.Offset += new Vector(0, commandsPerPage * ITEM_HEIGHT);
         } else {
-            scrollCommands.Offset = new Vector(scrollCommands.Offset.X, y_offset);
+            ScrollCommands.Offset = new Vector(ScrollCommands.Offset.X, y_offset);
         }
 
-        Control? control = commandsView!.ContainerFromIndex(dataContext!.CurrentPosition);
+        Control? control = CommandsView.ContainerFromIndex(dataContext!.CurrentPosition);
         control?.UpdateLayout(); // FindDescendant doesn't work on not yet updated
         TextBox? FocusBox = control?.FindDescendant<TextBox>("FocusHere");
         if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
@@ -96,7 +95,21 @@ public sealed partial class MainWindow : WindowBase {
         }
     }
 
-    private void ChangeCommitColors(object sender, RoutedEventArgs e) {
-        // TODO
+    private async void ChangeCommitColors(object sender, RoutedEventArgs e) {
+        ChangeColorsWindow window = new() {
+            DataContext = new ChangeColorsViewModel()
+        };
+        ColorByActionData? data = await window.ShowDialog<ColorByActionData>(this);
+
+        if (data is ColorSameData data1) {
+            dataContext!.DefaultCommitColor = data1.ChosenColor;
+            dataContext!.ColorSame(GetViewData());
+        } else if (data is ColorByAuthorData) {
+            dataContext!.ColorByAuthor(GetViewData());
+        } else if (data is ColorByDateData) {
+            dataContext!.ColorByDate(GetViewData());
+        } else if (data is ColorByRegexData data2) {
+            dataContext!.ColorByRegex(GetViewData(), data2.Regex, data2.Groups);
+        }
     }
 }
