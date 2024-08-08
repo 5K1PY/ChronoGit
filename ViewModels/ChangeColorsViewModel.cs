@@ -28,10 +28,10 @@ public class ChangeColorsViewModel : ViewModelBase {
         get => _regex;
         set => this.RaiseAndSetIfChanged(ref _regex, value);
     }
-    private string _groups = "";
-    public string Groups {
-        get => _groups;
-        set => this.RaiseAndSetIfChanged(ref _groups, value);
+    private int _group = 1;
+    public int Group {
+        get => _group;
+        set => this.RaiseAndSetIfChanged(ref _group, value);
     }
 }
 

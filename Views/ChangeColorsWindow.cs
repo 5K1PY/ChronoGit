@@ -9,7 +9,7 @@ public record class ColorByActionData;
 public record class ColorSameData(CommitColor ChosenColor) : ColorByActionData;
 public record class ColorByAuthorData : ColorByActionData;
 public record class ColorByDateData : ColorByActionData;
-public record class ColorByRegexData(string Regex, List<int> Groups) : ColorByActionData;
+public record class ColorByRegexData(string Regex, int Group) : ColorByActionData;
 
 public sealed partial class ChangeColorsWindow : WindowBase {
     private ChangeColorsViewModel? dataContext;
@@ -34,6 +34,7 @@ public sealed partial class ChangeColorsWindow : WindowBase {
         } else if (ColorByDate.IsChecked == true) {
             data = new ColorByDateData();
         } else if (ColorByRegex.IsChecked == true) {
+            data = new ColorByRegexData(dataContext!.Regex, dataContext!.Group);
         }
 
         Close(data);

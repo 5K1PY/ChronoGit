@@ -109,7 +109,7 @@ public sealed partial class MainWindow : WindowBase {
         } else if (data is ColorByDateData) {
             dataContext!.ColorByDate(GetViewData());
         } else if (data is ColorByRegexData data2) {
-            dataContext!.ColorByRegex(GetViewData(), data2.Regex, data2.Groups);
+            dataContext!.ColorByRegex(GetViewData(), data2.Regex, data2.Group);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using ReactiveUI;
 using ChronoGit.Models;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ChronoGit.ViewModels;
 
@@ -373,7 +374,11 @@ public sealed class MainWindowViewModel : ViewModelBase {
         ColorBy(ccvm => ccvm.Date);
     }
 
-    public void ColorByRegex(ViewData _, string regex, IEnumerable<int> groups) {
-
+    public void ColorByRegex(ViewData _, string regex, int group) {
+        ColorBy(ccvm => {
+            Match match = Regex.Match(ccvm.MessageShort, regex);
+            if (match.Success) return match.Groups[group].Value;
+            else return "";
+        });
     }
 }
