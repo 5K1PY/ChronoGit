@@ -1,9 +1,8 @@
 using ReactiveUI;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.Linq;
-using ChronoGit.Views;
 using System;
+using System.Text.RegularExpressions;
 
 namespace ChronoGit.ViewModels;
 
@@ -26,12 +25,39 @@ public class ChangeColorsViewModel : ViewModelBase {
     private string _regex = "";
     public string Regex {
         get => _regex;
-        set => this.RaiseAndSetIfChanged(ref _regex, value);
+        set {
+            if (_regex != value) {
+                _regex = value;
+                this.RaisePropertyChanged(nameof(Regex));
+                this.RaisePropertyChanged(nameof(CheckValidity));
+            }
+        }
     }
     private int _group = 1;
     public int Group {
         get => _group;
-        set => this.RaiseAndSetIfChanged(ref _group, value);
+        set {
+            if (_group != value) {
+                _group = value;
+                this.RaisePropertyChanged(nameof(Group));
+                this.RaisePropertyChanged(nameof(CheckValidity));
+            }
+        }
+    }
+
+    public bool CheckValidity {
+        get {
+            // TODO: Only if color by regex
+            try {
+                Regex regex = new Regex(Regex);
+                return regex.GetGroupNumbers().Contains(Group);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Invalid regex pattern: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
 
