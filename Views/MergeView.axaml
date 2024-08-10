@@ -2,18 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ChronoGit.ViewModels"
              xmlns:m="using:ChronoGit.Models"
-             x:Class="ChronoGit.Views.ResetView"
-             x:DataType="vm:ResetViewModel">
+             x:Class="ChronoGit.Views.MergeView"
+             x:DataType="vm:MergeViewModel">
 
     <UserControl.Resources>
         <vm:SelectionToColorConverter x:Key="SelectionToColorConverter"/>
     </UserControl.Resources>
 
-    <Grid RowDefinitions="10,Auto,Auto,10" ColumnDefinitions="60,10,100,Auto"
+    <Grid RowDefinitions="10,Auto,Auto,10" ColumnDefinitions="89,81,Auto"
           Background="{Binding Selected, Converter={StaticResource SelectionToColorConverter}}">
 
-        <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Height="60" Path="/Assets/reset.svg"/>
-        <TextBox Name="FocusHere" Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" HorizontalAlignment="Left" MinWidth="110"
+        <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Height="60" Path="/Assets/merge.svg"/>
+        <TextBox Name="FocusHere" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" HorizontalAlignment="Left" MinWidth="110"
                  Text="{Binding Argument}" Watermark="Enter label" FontSize="16"/>
     </Grid>
 </UserControl>

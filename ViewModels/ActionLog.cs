@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using LibGit2Sharp;
 
 namespace ChronoGit.ViewModels;
 
@@ -88,6 +87,25 @@ public sealed class RemoveRangeLog : ActionLog {
             for (int i=0; i<length; i++) {
                 commands.Insert(start + i, removed[i]);
             }
+        };
+    }
+}
+
+public sealed class ChangeArgumentLog : ActionLog {
+    public override int PositionBefore { get; protected init; }
+    public override int PositionAfter { get; protected init; }
+    public override Action<ObservableCollection<CommandViewModel>> Change { get; protected init; }
+    public override Action<ObservableCollection<CommandViewModel>> UndoChange { get; protected init; }
+    public override bool ChangesAnything { get; protected init; }
+
+    public ChangeArgumentLog(int index, string textBefore, string textAfter) {
+        PositionBefore = PositionAfter = index;
+        ChangesAnything = textBefore != textAfter;
+        Change = (commands) => {
+            (commands[index] as ArgumentCommandViewModel)!.Argument = textAfter;
+        };
+        UndoChange = (commands) => {
+            (commands[index] as ArgumentCommandViewModel)!.Argument = textBefore;
         };
     }
 }

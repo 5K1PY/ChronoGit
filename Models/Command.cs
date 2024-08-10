@@ -19,15 +19,28 @@ public abstract class Command {
 
 public abstract class CommitCommand : Command {
     public abstract Commit CommandCommit { get; set; }
+
     public override bool Equals(object? obj) {
         return (
             GetType() == obj?.GetType() &&
             CommandCommit == (obj as CommitCommand)!.CommandCommit
         );
     }
-
     public override int GetHashCode() {
         return CommandCommit.GetHashCode();
+    }
+}
+
+public abstract class ArgumentCommand : Command {
+    public abstract string Argument { get; set; }
+    public override bool Equals(object? obj) {
+        return (
+            GetType() == obj?.GetType() &&
+            Argument == (obj as ArgumentCommand)!.Argument
+        );
+    }
+    public override int GetHashCode() {
+        return Argument.GetHashCode();
     }
 }
 
@@ -55,36 +68,19 @@ public sealed class DropCommand(Commit commit) : CommitCommand {
     public override Commit CommandCommit { get; set; } = commit;
 }
 
-public sealed class LabelCommand(string label) : Command {
-    public string Label = label;
-    public override bool Equals(object? obj) {
-        return (
-            GetType() == obj?.GetType() &&
-            Label == (obj as LabelCommand)!.Label
-        );
-    }
-
-    public override int GetHashCode() {
-        return Label.GetHashCode();
-    }
+public sealed class ExecCommand(string script) : ArgumentCommand {
+    public override string Argument { get; set; } = script;
 }
 
-public sealed class ResetCommand(string label) : Command {
-    public string Label = label;
-
-    public override bool Equals(object? obj) {
-        return (
-            GetType() == obj?.GetType() &&
-            Label == (obj as ResetCommand)!.Label
-        );
-    }
-
-    public override int GetHashCode() {
-        return Label.GetHashCode();
-    }
+public sealed class LabelCommand(string label) : ArgumentCommand {
+    public override string Argument { get; set; } = label;
 }
 
-public sealed class MergeCommand(string label) {
-    public string Label { get; set; } = label;
+public sealed class ResetCommand(string label) : ArgumentCommand {
+    public override string Argument { get; set; } = label;
+}
+
+public sealed class MergeCommand(string label) : ArgumentCommand {
+    public override string Argument { get; set; } = label;
 }
 

@@ -11,7 +11,6 @@ public sealed partial class MainWindow : WindowBase {
     const double ITEM_HEIGHT = 60.0;
 
     MainWindowViewModel? dataContext;
-    ItemsControl? commandsView;
 
     KeyboardControls? controls;
 
@@ -22,8 +21,11 @@ public sealed partial class MainWindow : WindowBase {
     protected override void OnOpened(EventArgs e) {
         base.OnOpened(e);
         dataContext = (DataContext as MainWindowViewModel)!;
-        commandsView = this.FindControl<ItemsControl>("CommandsView")!;
         controls = KeyboardControls.Default(dataContext);
+    }
+
+    private ViewData GetViewData() {
+        return new ViewData((int) (ScrollCommands.Bounds.Height / ITEM_HEIGHT));
     }
 
     protected override void WindowKeyDown(object sender, KeyEventArgs e) {
@@ -31,23 +33,23 @@ public sealed partial class MainWindow : WindowBase {
 
         KeyCombination currentKeyCombination = GetCurrentKeyCombination(e.Key);
 
+        NamedAction? action = controls!.GetAction(currentKeyCombination);
+
         if (
             dataContext!.CurrentMode != Mode.InsertMode ||
             currentKeyCombination.CtrlPressed || 
-            currentKeyCombination == controls!.NormalModeKeyCombination
+            action?.ActionType == ActionType.ExitMode
         ) {
             e.Handled = true;
         } else {
             return;
         }
 
-        NamedAction? action = controls!.GetAction(currentKeyCombination);
-        action?.Action.Invoke();
+        action?.Action.Invoke(GetViewData());
 
-        ScrollViewer scrollCommands = this.FindControl<ScrollViewer>("ScrollCommandsView")!;
-        double height = scrollCommands.Bounds.Height;
-        double y_offset = scrollCommands.Offset.Y;
-
+        double height = ScrollCommands.Bounds.Height;
+        int commandsPerPage = (int) (height / ITEM_HEIGHT);
+        double y_offset = ScrollCommands.Offset.Y;
         double top_position = dataContext!.SelectedStart() * ITEM_HEIGHT;
         double bot_position = dataContext!.SelectedEnd() * ITEM_HEIGHT;
         double position = dataContext!.CurrentPosition * ITEM_HEIGHT;
@@ -60,9 +62,15 @@ public sealed partial class MainWindow : WindowBase {
             y_offset = Math.Min(Math.Max(position - height + ITEM_HEIGHT, y_offset), position);
         }
 
-        scrollCommands.Offset = new Vector(scrollCommands.Offset.X, y_offset);
+        if (action?.Name == ActionDescriptions.MOVE_PAGE_UP) {
+            ScrollCommands.Offset -= new Vector(0, commandsPerPage * ITEM_HEIGHT);
+        } else if (action?.Name == ActionDescriptions.MOVE_PAGE_DOWN) {
+            ScrollCommands.Offset += new Vector(0, commandsPerPage * ITEM_HEIGHT);
+        } else {
+            ScrollCommands.Offset = new Vector(ScrollCommands.Offset.X, y_offset);
+        }
 
-        Control? control = commandsView!.ContainerFromIndex(dataContext!.CurrentPosition);
+        Control? control = CommandsView.ContainerFromIndex(dataContext!.CurrentPosition);
         control?.UpdateLayout(); // FindDescendant doesn't work on not yet updated
         TextBox? FocusBox = control?.FindDescendant<TextBox>("FocusHere");
         if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
@@ -87,7 +95,21 @@ public sealed partial class MainWindow : WindowBase {
         }
     }
 
-    private void ChangeCommitColors(object sender, RoutedEventArgs e) {
-        // TODO
+    private async void ChangeCommitColors(object sender, RoutedEventArgs e) {
+        ChangeColorsWindow window = new() {
+            DataContext = new ChangeColorsViewModel()
+        };
+        ColorByActionData? data = await window.ShowDialog<ColorByActionData>(this);
+
+        if (data is ColorSameData data1) {
+            dataContext!.DefaultCommitColor = data1.ChosenColor;
+            dataContext!.ColorSame(GetViewData());
+        } else if (data is ColorByAuthorData) {
+            dataContext!.ColorByAuthor(GetViewData());
+        } else if (data is ColorByDateData) {
+            dataContext!.ColorByDate(GetViewData());
+        } else if (data is ColorByRegexData data2) {
+            dataContext!.ColorByRegex(GetViewData(), data2.Regex, data2.Group);
+        }
     }
 }

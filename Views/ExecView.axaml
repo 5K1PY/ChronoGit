@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ChronoGit.ViewModels"
              xmlns:m="using:ChronoGit.Models"
-             x:Class="ChronoGit.Views.RewordView"
-             x:DataType="vm:RewordViewModel">
+             x:Class="ChronoGit.Views.ExecView"
+             x:DataType="vm:ExecViewModel">
 
     <UserControl.Resources>
         <vm:SelectionToColorConverter x:Key="SelectionToColorConverter"/>
@@ -12,9 +12,8 @@
     <Grid RowDefinitions="10,Auto,Auto,10" ColumnDefinitions="60,10,100,Auto"
           Background="{Binding Selected, Converter={StaticResource SelectionToColorConverter}}">
 
-        <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Height="60" Path="{Binding IconPath}"/>
-        <TextBlock Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" Text="{Binding Id}"/>
-        <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding MessageShort}" TextDecorations="Strikethrough" Foreground="Gray" FontSize="16"/>
-        <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Author}"/>
+        <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Height="60" Path="/Assets/exec.svg"/>
+        <TextBox Name="FocusHere" Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" HorizontalAlignment="Left" MinWidth="110"
+                 Text="{Binding Argument}" Watermark="Enter script" FontSize="16"/>
     </Grid>
 </UserControl>

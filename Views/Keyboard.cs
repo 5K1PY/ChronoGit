@@ -14,7 +14,8 @@ public record struct KeyCombination(bool ShiftPressed, bool CtrlPressed, Key Key
 }
 
 public enum ActionType {
-    ModeChange,
+    EnterMode,
+    ExitMode,
     Move,
     ShiftUp,
     ShiftDown,
@@ -25,7 +26,7 @@ public enum ActionType {
     Color,
 }
 
-public record class NamedAction(string Name, ActionType ActionType, Action Action);
+public record class NamedAction(string Name, ActionType ActionType, Action<ViewData> Action);
 
 public record class BoundAction(NamedAction NamedAction, KeyCombination KeyCombination);
 
@@ -33,6 +34,8 @@ public static class ActionDescriptions {
     public const string NORMAL_MODE = "Enter normal mode";
     public const string MOVE_UP = "Move up";
     public const string MOVE_DOWN = "Move down";
+    public const string MOVE_PAGE_UP = "Move page up";
+    public const string MOVE_PAGE_DOWN = "Move page down";
     public const string MOVE_TOP = "Move to top";
     public const string MOVE_BOTTOM = "Move to bottom";
     public const string CONVERT_DROP = "Convert selection to drop";
@@ -41,10 +44,14 @@ public static class ActionDescriptions {
     public const string INSERT_MODE = "Enter insert mode";
     public const string SHIFT_DOWN = "Shift selection down";
     public const string SHIFT_UP = "Shift selection up";
+    public const string ADD_EXEC_AFTER = "Add exec after selection";
+    public const string ADD_EXEC_BEFORE = "Add exec before selection";
     public const string ADD_LABEL_AFTER = "Add label after selection";
     public const string ADD_LABEL_BEFORE = "Add label before selection";
     public const string ADD_RESET_AFTER = "Add reset after selection";
     public const string ADD_RESET_BEFORE = "Add reset before selection";
+    public const string ADD_MERGE_AFTER = "Add merge after selection";
+    public const string ADD_MERGE_BEFORE = "Add merge before selection";
     public const string CONVERT_PICK = "Convert selection to pick";
     public const string CONVERT_REWORD = "Convert selection to reword";
     public const string CONVERT_SQUASH = "Convert selection to squash";
@@ -54,12 +61,11 @@ public static class ActionDescriptions {
     public const string REDO = "Redo";
     public const string COLOR_SAME = "Color all commits same";
     public const string COLOR_BY_AUTHOR = "Color commits by author";
+    public const string COLOR_BY_DATE = "Color commits by date";
 }
 
 public class KeyboardControls {
     private readonly Dictionary<KeyCombination, NamedAction> actions;
-    public KeyCombination NormalModeKeyCombination { get; private init; }
- 
     private static readonly ImmutableArray<string> actionOrder = [
         ActionDescriptions.NORMAL_MODE,
         ActionDescriptions.VISUAL_MODE,
@@ -78,13 +84,18 @@ public class KeyboardControls {
         ActionDescriptions.CONVERT_DROP,
         ActionDescriptions.ADD_LABEL_AFTER,
         ActionDescriptions.ADD_LABEL_BEFORE,
+        ActionDescriptions.ADD_LABEL_AFTER,
+        ActionDescriptions.ADD_LABEL_BEFORE,
         ActionDescriptions.ADD_RESET_AFTER,
         ActionDescriptions.ADD_RESET_BEFORE,
+        ActionDescriptions.ADD_MERGE_AFTER,
+        ActionDescriptions.ADD_MERGE_BEFORE,
         ActionDescriptions.DELETE,
         ActionDescriptions.UNDO,
         ActionDescriptions.REDO,
         ActionDescriptions.COLOR_SAME,
         ActionDescriptions.COLOR_BY_AUTHOR,
+        ActionDescriptions.COLOR_BY_DATE,
     ];
 
     public KeyboardControls(ICollection<BoundAction> actionsCollection) {
@@ -92,20 +103,18 @@ public class KeyboardControls {
         foreach (BoundAction boundAction in actionsCollection) {
             Debug.Assert(!actions.ContainsKey(boundAction.KeyCombination));
             actions[boundAction.KeyCombination] = boundAction.NamedAction;
-
-            if (boundAction.NamedAction.Name == ActionDescriptions.NORMAL_MODE) {
-                NormalModeKeyCombination = boundAction.KeyCombination;
-            }
         }
     }
 
     public static KeyboardControls Default(MainWindowViewModel dataContext) {
         return new KeyboardControls(new List<BoundAction>{
-            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ModeChange, dataContext.NormalMode),       new KeyCombination(false, false, Key.Escape)), 
-            new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE,      ActionType.ModeChange, dataContext.ToggleVisualMode), new KeyCombination(false, false, Key.V)), 
-            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.ModeChange, dataContext.InsertMode),       new KeyCombination(false, false, Key.I)), 
+            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ExitMode,   dataContext.ExitCurrentMode),  new KeyCombination(false, false, Key.Escape)), 
+            new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE,      ActionType.EnterMode,  dataContext.ToggleVisualMode), new KeyCombination(false, false, Key.V)), 
+            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.EnterMode,  dataContext.EnterInsertMode),  new KeyCombination(false, false, Key.I)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_UP,          ActionType.Move,       dataContext.MoveUp),           new KeyCombination(false, false, Key.Up)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_DOWN,        ActionType.Move,       dataContext.MoveDown),         new KeyCombination(false, false, Key.Down)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_UP,     ActionType.Move,       dataContext.MovePageUp),       new KeyCombination(false, false, Key.PageUp)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_DOWN,   ActionType.Move,       dataContext.MovePageDown),     new KeyCombination(false, false, Key.PageDown)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_TOP,         ActionType.Move,       dataContext.MoveToTop),        new KeyCombination(false, false, Key.Home)), 
             new BoundAction(new NamedAction(ActionDescriptions.MOVE_BOTTOM,      ActionType.Move,       dataContext.MoveToBottom),     new KeyCombination(false, false, Key.End)), 
             new BoundAction(new NamedAction(ActionDescriptions.SHIFT_UP,         ActionType.ShiftUp,    dataContext.ShiftUp),          new KeyCombination(false, false, Key.K)), 
@@ -116,15 +125,20 @@ public class KeyboardControls {
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_SQUASH,   ActionType.Convert,    dataContext.ConvertToSquash),  new KeyCombination(false, false, Key.S)), 
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_FIXUP,    ActionType.Convert,    dataContext.ConvertToFixup),   new KeyCombination(false, false, Key.F)), 
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_DROP,     ActionType.Convert,    dataContext.ConvertToDrop),    new KeyCombination(false, false, Key.D)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_AFTER,   ActionType.Insert,     dataContext.AddExecAfter),     new KeyCombination(false, false, Key.X)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_BEFORE,  ActionType.Insert,     dataContext.AddExecBefore),    new KeyCombination(true,  false, Key.X)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_AFTER,  ActionType.Insert,     dataContext.AddLabelAfter),    new KeyCombination(false, false, Key.L)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_BEFORE, ActionType.Insert,     dataContext.AddLabelBefore),   new KeyCombination(true,  false, Key.L)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_AFTER,  ActionType.Insert,     dataContext.AddResetAfter),    new KeyCombination(false, false, Key.T)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_BEFORE, ActionType.Insert,     dataContext.AddResetBefore),   new KeyCombination(true,  false, Key.T)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_MERGE_AFTER,  ActionType.Insert,     dataContext.AddMergeAfter),    new KeyCombination(false, false, Key.M)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_MERGE_BEFORE, ActionType.Insert,     dataContext.AddMergeBefore),   new KeyCombination(true,  false, Key.M)), 
             new BoundAction(new NamedAction(ActionDescriptions.DELETE,           ActionType.Delete,     dataContext.Delete),           new KeyCombination(false, false, Key.Delete)), 
             new BoundAction(new NamedAction(ActionDescriptions.UNDO,             ActionType.History,    dataContext.Undo),             new KeyCombination(false, false, Key.U)), 
             new BoundAction(new NamedAction(ActionDescriptions.REDO,             ActionType.History,    dataContext.Redo),             new KeyCombination(false, true,  Key.R)), 
             new BoundAction(new NamedAction(ActionDescriptions.COLOR_SAME,       ActionType.Color,      dataContext.ColorSame),        new KeyCombination(false, true,  Key.S)), 
             new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_AUTHOR,  ActionType.Color,      dataContext.ColorByAuthor),    new KeyCombination(false, true,  Key.A)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_DATE,    ActionType.Color,      dataContext.ColorByDate),      new KeyCombination(false, true,  Key.D)), 
         });
     }
 

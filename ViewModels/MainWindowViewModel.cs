@@ -4,8 +4,11 @@ using System.Collections.ObjectModel;
 using ReactiveUI;
 using ChronoGit.Models;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ChronoGit.ViewModels;
+
+public record class ViewData(int CommandsPerPage);
 
 public enum Mode {
     NormalMode,
@@ -22,17 +25,19 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
     private IEnumerable<CommitCommandViewModel> CommitCommands() {
-        foreach (CommitCommandViewModel? ccvm in Commands) {
-            if (ccvm is not null)
-                yield return ccvm;
+        foreach (CommandViewModel cvm in Commands) {
+            if (cvm is CommitCommandViewModel model)
+                yield return model;
         }
     }
     public bool CommandsEmpty => !Commands.Any();
+
+    public CommitColor DefaultCommitColor = CommitColor.Red;
     public MainWindowViewModel() {
         var commits = Init.GetCommits();
         _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
-            _commands.Add(new PickViewModel(action));
+            _commands.Add(new PickViewModel(action, DefaultCommitColor));
         }
         _commands[0].Selected = true;
         Commands.CollectionChanged += (s, e) => this.RaisePropertyChanged(nameof(CommandsEmpty));
@@ -50,6 +55,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _currentPosition, value);
     }
     public int VisualModeStartPosition { get; private set; } = 0;
+    private string BeforeInsertModeArgument = "";
 
     public int SelectedStart() {
         if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
@@ -87,11 +93,21 @@ public sealed class MainWindowViewModel : ViewModelBase {
                     Commands[i].Selected = false;
                 }
             }
+        } else if (CurrentMode == Mode.InsertMode) {
+            Act(new ChangeArgumentLog(
+                CurrentPosition,
+                BeforeInsertModeArgument,
+                (Commands[CurrentPosition] as ArgumentCommandViewModel)!.Argument
+            ));
         }
         CurrentMode = Mode.NormalMode;
     }
 
-    public void ToggleVisualMode() {
+    public void ExitCurrentMode(ViewData _) {
+        NormalMode();
+    }
+
+    public void ToggleVisualMode(ViewData _) {
         if (CurrentMode == Mode.NormalMode) {
             CurrentMode = Mode.VisualMode;
             VisualModeStartPosition = CurrentPosition;
@@ -101,7 +117,17 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     public void InsertMode() {
-        CurrentMode = Mode.InsertMode;
+        if (CurrentMode != Mode.NormalMode) return;
+
+        ArgumentCommandViewModel? acvm = Commands[CurrentPosition] as ArgumentCommandViewModel;
+        if (acvm is not null) {
+            CurrentMode = Mode.InsertMode;
+            BeforeInsertModeArgument = acvm.Argument;
+        }
+    }
+
+    public void EnterInsertMode(ViewData _) {
+        InsertMode();
     }
 
     private void MovePositionTo(int targetPosition) {
@@ -119,19 +145,27 @@ public sealed class MainWindowViewModel : ViewModelBase {
         CurrentPosition = targetPosition;
     }
 
-    public void MoveUp() {
+    public void MoveUp(ViewData _) {
         MovePositionTo(CurrentPosition - 1);
     }
 
-    public void MoveDown() {
+    public void MoveDown(ViewData _) {
         MovePositionTo(CurrentPosition + 1);
     }
 
-    public void MoveToTop() {
+    public void MovePageUp(ViewData viewData) {
+        MovePositionTo(CurrentPosition - viewData.CommandsPerPage);
+    }
+
+    public void MovePageDown(ViewData viewData) {
+        MovePositionTo(CurrentPosition + viewData.CommandsPerPage);
+    }
+
+    public void MoveToTop(ViewData _) {
         MovePositionTo(0);
     }
 
-    public void MoveToBottom() {
+    public void MoveToBottom(ViewData _) {
         MovePositionTo(Commands.Count);
     }
 
@@ -164,7 +198,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void Undo() {
+    public void Undo(ViewData _) {
         if (historyPosition > 0) {
             historyPosition--;
             RunAction(history[historyPosition].UndoChange);
@@ -173,7 +207,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void Redo() {
+    public void Redo(ViewData _) {
         if (historyPosition < history.Count) {
             RunAction(history[historyPosition].Change);
             MovePositionTo(history[historyPosition].PositionAfter);
@@ -182,7 +216,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void ShiftUp() {
+    public void ShiftUp(ViewData _) {
         if (SelectedStart() == 0) return;
 
         List<CommandViewModel> replace = Commands.Slice(SelectedStart(), SelectedRangeLength());
@@ -196,7 +230,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         MovePositionTo(CurrentPosition-1);
     }
 
-    public void ShiftDown() {
+    public void ShiftDown(ViewData _) {
         if (SelectedEnd()+1 == Commands.Count) return;
 
         List<CommandViewModel> replace = Commands.Slice(SelectedStart(), SelectedRangeLength());
@@ -210,7 +244,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         MovePositionTo(CurrentPosition+1);
     }
 
-    public void Delete() {
+    public void Delete(ViewData _) {
         Act(new RemoveRangeLog(Commands, SelectedStart(), SelectedRangeLength()));
         MovePositionTo(SelectedStart());
         NormalMode();
@@ -231,27 +265,27 @@ public sealed class MainWindowViewModel : ViewModelBase {
         NormalMode();
     }
 
-    public void ConvertToEdit() {
+    public void ConvertToEdit(ViewData _) {
         ConvertCommitCommands(CommitCommandConversions.ToEdit);
     }
 
-    public void ConvertToFixup() {
+    public void ConvertToFixup(ViewData _) {
         ConvertCommitCommands(CommitCommandConversions.ToFixup);
     }
 
-    public void ConvertToPick() {
+    public void ConvertToPick(ViewData _) {
         ConvertCommitCommands(CommitCommandConversions.ToPick);
     }
 
-    public void ConvertToReword() {
+    public void ConvertToReword(ViewData _) {
         ConvertCommitCommands(CommitCommandConversions.ToReword);
     }
 
-    public void ConvertToSquash() {
+    public void ConvertToSquash(ViewData _) {
         ConvertCommitCommands(CommitCommandConversions.ToSquash);
     }
 
-    public void ConvertToDrop() {
+    public void ConvertToDrop(ViewData _) {
         ConvertCommitCommands(CommitCommandConversions.ToDrop);
     }
 
@@ -271,27 +305,52 @@ public sealed class MainWindowViewModel : ViewModelBase {
         InsertAndMoveTo(cvm, SelectedEnd()+1);
     }
 
-    public void AddLabelBefore() {
+    public void AddExecBefore(ViewData _) {
+        InsertBefore(new ExecViewModel());
+        InsertMode();
+    }
+
+    public void AddExecAfter(ViewData _) {
+        InsertAfter(new ExecViewModel());
+        InsertMode();
+    }
+
+    public void AddLabelBefore(ViewData _) {
         InsertBefore(new LabelViewModel());
         InsertMode();
     }
 
-    public void AddLabelAfter() {
+    public void AddLabelAfter(ViewData _) {
         InsertAfter(new LabelViewModel());
         InsertMode();
     }
 
-    public void AddResetBefore() {
+    public void AddResetBefore(ViewData _) {
         InsertBefore(new ResetViewModel());
         InsertMode();
     }
 
-    public void AddResetAfter() {
+    public void AddResetAfter(ViewData _) {
         InsertAfter(new ResetViewModel());
         InsertMode();
     }
 
+    public void AddMergeBefore(ViewData _) {
+        InsertBefore(new MergeViewModel());
+        InsertMode();
+    }
+
+    public void AddMergeAfter(ViewData _) {
+        InsertAfter(new MergeViewModel());
+        InsertMode();
+    }
+
     // Colors
+    public void ColorSame(ViewData _) {
+        foreach (CommitCommandViewModel ccvm in CommitCommands()) {
+            ccvm.Color = DefaultCommitColor;
+        }
+    }
 
     private void ColorBy<T>(Func<CommitCommandViewModel, T> getGroup) where T : notnull {
         CommitColor currentColor = 0;
@@ -307,11 +366,19 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void ColorSame() {
-        ColorBy(_ => CommitColor.Red);
+    public void ColorByAuthor(ViewData _) {
+        ColorBy(ccvm => ccvm.Author);
     }
 
-    public void ColorByAuthor() {
-        ColorBy(ccvm => ccvm.Author);
+    public void ColorByDate(ViewData _) {
+        ColorBy(ccvm => ccvm.Date);
+    }
+
+    public void ColorByRegex(ViewData _, string regex, int group) {
+        ColorBy(ccvm => {
+            Match match = Regex.Match(ccvm.MessageShort, regex);
+            if (match.Success) return match.Groups[group].Value;
+            else return "";
+        });
     }
 }
