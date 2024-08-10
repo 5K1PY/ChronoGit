@@ -18,16 +18,16 @@
     </Design.DataContext>
 
     <StackPanel Margin="10">
-        <RadioButton Name="ColorSame" IsChecked="True" Content="Color all commits same:"  GroupName="ColorByType"/>
+        <RadioButton Name="ColorSame" IsChecked="{Binding ColorSame}" Content="Color all commits same:" GroupName="ColorByType"/>
         <Grid ColumnDefinitions="50,50,7,100">
             <TextBlock Grid.Column="1" Text="Color:" VerticalAlignment="Center"/>
             <ComboBox  Grid.Column="3"  Width="100"  Name="ChosenColorBox" ItemsSource="{Binding CommitColors}"
                        SelectedItem="{Binding ChosenColor}" IsEnabled="{Binding IsChecked, ElementName=ColorSame}"/>
         </Grid>
 
-        <RadioButton Name="ColorByAuthor" Content="Color commits by author" GroupName="ColorByType"/>
-        <RadioButton Name="ColorByDate"   Content="Color commits by date"   GroupName="ColorByType"/>
-        <RadioButton x:Name="ColorByRegex"  Content="Color commits by regex"  GroupName="ColorByType"/>
+        <RadioButton Name="ColorByAuthor" IsChecked="{Binding ColorByAuthor}" Content="Color commits by author" GroupName="ColorByType"/>
+        <RadioButton Name="ColorByDate"   IsChecked="{Binding ColorByDate}"   Content="Color commits by date"   GroupName="ColorByType"/>
+        <RadioButton Name="ColorByRegex"  IsChecked="{Binding ColorByRegex}"  Content="Color commits by regex"  GroupName="ColorByType"/>
         <Grid ColumnDefinitions="50,50,10,Auto" RowDefinitions="*,5,*">
             <TextBlock Grid.Row="0" Grid.Column="1" Text="Regex:" VerticalAlignment="Center"/>
             <TextBox Grid.Row="0" Grid.Column="3" MinWidth="100" MaxWidth="267" HorizontalAlignment="Left"

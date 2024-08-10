@@ -15,6 +15,32 @@ public class ChangeColorsViewModel : ViewModelBase {
         CommitColors = new ObservableCollection<CommitColor>(Enum.GetValues(typeof(CommitColor)).Cast<CommitColor>());
         ChosenColor = CommitColors.First();  // Default selection
     }
+    private bool _colorSame = true;
+    public bool ColorSame {
+        get => _colorSame;
+        set => this.RaiseAndSetIfChanged(ref _colorSame, value);
+    }
+    private bool _colorByAuthor = false;
+    public bool ColorByAuthor {
+        get => _colorByAuthor;
+        set => this.RaiseAndSetIfChanged(ref _colorByAuthor, value);
+    }
+    private bool _colorByDate = false;
+    public bool ColorByDate {
+        get => _colorByDate;
+        set => this.RaiseAndSetIfChanged(ref _colorByDate, value);
+    }
+    private bool _colorByRegex = false;
+    public bool ColorByRegex {
+        get => _colorByRegex;
+        set {
+            if (_colorByRegex != value) {
+                _colorByRegex = value;
+                this.RaisePropertyChanged(nameof(ColorByRegex));
+                this.RaisePropertyChanged(nameof(CheckValidity));
+            }
+        }
+    }
 
     private CommitColor _chosenColor;
     public CommitColor ChosenColor {
@@ -47,14 +73,13 @@ public class ChangeColorsViewModel : ViewModelBase {
 
     public bool CheckValidity {
         get {
-            // TODO: Only if color by regex
+            if (!ColorByRegex) return true;
             try {
                 Regex regex = new Regex(Regex);
                 return regex.GetGroupNumbers().Contains(Group);
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                Console.WriteLine($"Invalid regex pattern: {ex.Message}");
                 return false;
             }
         }
