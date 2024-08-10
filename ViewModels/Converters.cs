@@ -5,6 +5,22 @@ using System.Globalization;
 
 namespace ChronoGit.ViewModels;
 
+public class StringToIntConverter : IValueConverter {
+    object? IValueConverter.Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+        if (value is int intValue) {
+            return (intValue == -1) ? "" : intValue.ToString();
+        }
+        return "";
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+        if (int.TryParse(value?.ToString(), out int res)) {
+            return res;
+        }
+        return -1;
+    }
+}
+
 public class SelectionToColorConverter : IValueConverter {
     object? IValueConverter.Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
         if (value is bool boolValue) {

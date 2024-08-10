@@ -37,6 +37,8 @@ public class ChangeColorsViewModel : ViewModelBase {
             if (_colorByRegex != value) {
                 _colorByRegex = value;
                 this.RaisePropertyChanged(nameof(ColorByRegex));
+                this.RaisePropertyChanged(nameof(RegexValid));
+                this.RaisePropertyChanged(nameof(GroupValid));
                 this.RaisePropertyChanged(nameof(CheckValidity));
             }
         }

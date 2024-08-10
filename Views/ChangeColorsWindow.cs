@@ -1,5 +1,6 @@
 using System;
-using System.Collections.Generic;
+using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using ChronoGit.ViewModels;
 
@@ -15,6 +16,7 @@ public sealed partial class ChangeColorsWindow : WindowBase {
     private ChangeColorsViewModel? dataContext;
     public ChangeColorsWindow() {
         InitializeComponent();
+        Groups.AddHandler(TextInputEvent, FilterNumbers, RoutingStrategies.Tunnel);
     }
 
     protected override void OnOpened(EventArgs e) {
@@ -38,5 +40,12 @@ public sealed partial class ChangeColorsWindow : WindowBase {
         }
 
         Close(data);
+    }
+
+    private void FilterNumbers(object? sender, TextInputEventArgs e) {
+        string new_text = (sender as TextBox)!.Text + e.Text;
+        if (!int.TryParse(new_text, out _)) {
+            e.Handled = true;
+        }
     }
 }
