@@ -19,3 +19,17 @@ public class SelectionToColorConverter : IValueConverter {
     }
 }
 
+public class ValidityToColorConverter : IValueConverter {
+    object? IValueConverter.Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+        if (value is bool boolValue) {
+            return boolValue ? Brushes.Black : Brushes.Red;
+        }
+        // Throwing here doesn't work anyway
+        return Brushes.Transparent;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+        throw new NotImplementedException();
+    }
+}
+

@@ -55,8 +55,21 @@ public class ChangeColorsViewModel : ViewModelBase {
             if (_regex != value) {
                 _regex = value;
                 this.RaisePropertyChanged(nameof(Regex));
+                this.RaisePropertyChanged(nameof(RegexValid));
+                this.RaisePropertyChanged(nameof(GroupValid));
                 this.RaisePropertyChanged(nameof(CheckValidity));
             }
+        }
+    }
+    public bool RegexValid {
+        get {
+            if (!ColorByRegex) return true;
+            try {
+                Regex regex = new Regex(Regex);
+            } catch (ArgumentException) {
+                return false;
+            }
+            return true;
         }
     }
     private int _group = 1;
@@ -66,23 +79,24 @@ public class ChangeColorsViewModel : ViewModelBase {
             if (_group != value) {
                 _group = value;
                 this.RaisePropertyChanged(nameof(Group));
+                this.RaisePropertyChanged(nameof(GroupValid));
                 this.RaisePropertyChanged(nameof(CheckValidity));
             }
         }
     }
 
-    public bool CheckValidity {
+    public bool GroupValid {
         get {
             if (!ColorByRegex) return true;
             try {
                 Regex regex = new Regex(Regex);
                 return regex.GetGroupNumbers().Contains(Group);
-            }
-            catch (ArgumentException)
-            {
+            } catch (ArgumentException) {
                 return false;
             }
         }
     }
+
+    public bool CheckValidity => RegexValid && GroupValid;
 }
 

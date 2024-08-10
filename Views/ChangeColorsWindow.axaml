@@ -13,6 +13,10 @@
         KeyDown="WindowKeyDown"
         KeyUp="WindowKeyUp">
 
+    <Window.Resources>
+        <vm:ValidityToColorConverter x:Key="ValidityToColorConverter"/>
+    </Window.Resources>
+
     <Design.DataContext>
         <vm:ChangeColorsViewModel/>
     </Design.DataContext>
@@ -31,10 +35,14 @@
         <Grid ColumnDefinitions="50,50,10,Auto" RowDefinitions="*,5,*">
             <TextBlock Grid.Row="0" Grid.Column="1" Text="Regex:" VerticalAlignment="Center"/>
             <TextBox Grid.Row="0" Grid.Column="3" MinWidth="100" MaxWidth="267" HorizontalAlignment="Left"
-                     Text="{Binding Regex}" IsEnabled="{Binding IsChecked, ElementName=ColorByRegex}"/>
+                     Text="{Binding Regex}" IsEnabled="{Binding IsChecked, ElementName=ColorByRegex}"
+                     BorderBrush="{Binding RegexValid, Converter={StaticResource ValidityToColorConverter}}"
+                     Foreground="{Binding RegexValid, Converter={StaticResource ValidityToColorConverter}}"/>
             <TextBlock Grid.Row="2" Grid.Column="1" Text="Groups:" VerticalAlignment="Center"/>
             <TextBox Grid.Row="2" Grid.Column="3" MinWidth="100" MaxWidth="238" HorizontalAlignment="Left"
-                     Text="{Binding Group}" IsEnabled="{Binding IsChecked, ElementName=ColorByRegex}"/>
+                     Text="{Binding Group}" IsEnabled="{Binding IsChecked, ElementName=ColorByRegex}"
+                     BorderBrush="{Binding GroupValid, Converter={StaticResource ValidityToColorConverter}}"
+                     Foreground="{Binding GroupValid, Converter={StaticResource ValidityToColorConverter}}"/>
         </Grid>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 10, 0, 0">
