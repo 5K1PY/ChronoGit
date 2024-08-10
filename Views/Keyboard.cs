@@ -44,6 +44,8 @@ public static class ActionDescriptions {
     public const string INSERT_MODE = "Enter insert mode";
     public const string SHIFT_DOWN = "Shift selection down";
     public const string SHIFT_UP = "Shift selection up";
+    public const string ADD_BREAK_AFTER = "Add break after selection";
+    public const string ADD_BREAK_BEFORE = "Add break before selection";
     public const string ADD_EXEC_AFTER = "Add exec after selection";
     public const string ADD_EXEC_BEFORE = "Add exec before selection";
     public const string ADD_LABEL_AFTER = "Add label after selection";
@@ -72,6 +74,8 @@ public class KeyboardControls {
         ActionDescriptions.INSERT_MODE,
         ActionDescriptions.MOVE_UP,
         ActionDescriptions.MOVE_DOWN,
+        ActionDescriptions.MOVE_PAGE_UP,
+        ActionDescriptions.MOVE_PAGE_DOWN,
         ActionDescriptions.MOVE_TOP,
         ActionDescriptions.MOVE_BOTTOM,
         ActionDescriptions.SHIFT_UP,
@@ -82,8 +86,10 @@ public class KeyboardControls {
         ActionDescriptions.CONVERT_SQUASH,
         ActionDescriptions.CONVERT_FIXUP,
         ActionDescriptions.CONVERT_DROP,
-        ActionDescriptions.ADD_LABEL_AFTER,
-        ActionDescriptions.ADD_LABEL_BEFORE,
+        ActionDescriptions.ADD_BREAK_AFTER,
+        ActionDescriptions.ADD_BREAK_BEFORE,
+        ActionDescriptions.ADD_EXEC_AFTER,
+        ActionDescriptions.ADD_EXEC_BEFORE,
         ActionDescriptions.ADD_LABEL_AFTER,
         ActionDescriptions.ADD_LABEL_BEFORE,
         ActionDescriptions.ADD_RESET_AFTER,
@@ -125,6 +131,8 @@ public class KeyboardControls {
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_SQUASH,   ActionType.Convert,    dataContext.ConvertToSquash),  new KeyCombination(false, false, Key.S)), 
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_FIXUP,    ActionType.Convert,    dataContext.ConvertToFixup),   new KeyCombination(false, false, Key.F)), 
             new BoundAction(new NamedAction(ActionDescriptions.CONVERT_DROP,     ActionType.Convert,    dataContext.ConvertToDrop),    new KeyCombination(false, false, Key.D)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_BREAK_AFTER,  ActionType.Insert,     dataContext.AddBreakAfter),    new KeyCombination(false, false, Key.B)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_BREAK_BEFORE, ActionType.Insert,     dataContext.AddBreakBefore),   new KeyCombination(true,  false, Key.B)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_AFTER,   ActionType.Insert,     dataContext.AddExecAfter),     new KeyCombination(false, false, Key.X)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_BEFORE,  ActionType.Insert,     dataContext.AddExecBefore),    new KeyCombination(true,  false, Key.X)), 
             new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_AFTER,  ActionType.Insert,     dataContext.AddLabelAfter),    new KeyCombination(false, false, Key.L)), 

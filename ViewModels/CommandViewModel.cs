@@ -163,6 +163,11 @@ public sealed partial class DropViewModel : CommitCommandViewModel {
     }
 }
 
+public sealed partial class BreakViewModel : CommandViewModel {
+    protected internal override Command Command { get; set; } = new BreakCommand();
+    internal BreakCommand BreakCommand => (BreakCommand) Command;
+}
+
 public sealed partial class ExecViewModel : ArgumentCommandViewModel {
     protected internal override Command Command { get; set; }
     internal ExecCommand ExecCommand => (ExecCommand) Command;

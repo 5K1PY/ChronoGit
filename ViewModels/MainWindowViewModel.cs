@@ -305,6 +305,14 @@ public sealed class MainWindowViewModel : ViewModelBase {
         InsertAndMoveTo(cvm, SelectedEnd()+1);
     }
 
+    public void AddBreakBefore(ViewData _) {
+        InsertBefore(new BreakViewModel());
+    }
+
+    public void AddBreakAfter(ViewData _) {
+        InsertAfter(new BreakViewModel());
+    }
+
     public void AddExecBefore(ViewData _) {
         InsertBefore(new ExecViewModel());
         InsertMode();

@@ -68,6 +68,16 @@ public sealed class DropCommand(Commit commit) : CommitCommand {
     public override Commit CommandCommit { get; set; } = commit;
 }
 
+public sealed class BreakCommand : Command {
+    public override bool Equals(object? obj) {
+        return GetType() == obj?.GetType();
+    }
+
+    public override int GetHashCode() {
+        return 0;
+    }
+}
+
 public sealed class ExecCommand(string script) : ArgumentCommand {
     public override string Argument { get; set; } = script;
 }

@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChronoGit.ViewModels"
+             xmlns:m="using:ChronoGit.Models"
+             x:Class="ChronoGit.Views.BreakView"
+             x:DataType="vm:BreakViewModel">
+
+    <UserControl.Resources>
+        <vm:SelectionToColorConverter x:Key="SelectionToColorConverter"/>
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="60" ColumnDefinitions="60,*"
+          Background="{Binding Selected, Converter={StaticResource SelectionToColorConverter}}">
+
+        <Svg Height="60" HorizontalAlignment="Left" Path="/Assets/break.svg"/>
+    </Grid>
+
+</UserControl>
