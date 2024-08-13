@@ -15,6 +15,6 @@
         <Svg Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Height="60" Path="{Binding IconPath}"/>
         <TextBlock Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" Text="{Binding Id}"/>
         <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding MessageShort}" TextDecorations="Strikethrough" Foreground="Gray" FontSize="16"/>
-        <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Author}" TextDecorations="Strikethrough" Foreground="Gray"/>
+        <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding FullAuthor}" TextDecorations="Strikethrough" Foreground="Gray"/>
     </Grid>
 </UserControl>

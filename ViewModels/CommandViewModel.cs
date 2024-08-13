@@ -64,7 +64,7 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
     public string Id => CommitCommand.CommandCommit.Id.ToString().Substring(0, 7);
     public string Message => CommitCommand.CommandCommit.Message;
     public string MessageShort => CommitCommand.CommandCommit.MessageShort;
-    public string Author => CommitCommand.CommandCommit.Author.ToString();
+    public string Author => CommitCommand.CommandCommit.Author.Name.ToString();
     public string AuthorEmail => CommitCommand.CommandCommit.Author.Email.ToString();
     public string FullAuthor => string.Format("{0} <{1}>", Author, AuthorEmail);
     private DateTimeOffset dateTimeOffset => CommitCommand.CommandCommit.Author.When;
