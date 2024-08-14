@@ -34,8 +34,9 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
     public CommitColor DefaultCommitColor = CommitColor.Red;
     public MainWindowViewModel() {
+        // TODO
         var repo = new Repo("/home/skipy/dev/pisek");
-        var commits = repo.GetCommits(15);
+        var commits = repo.GetCommits("798c2");
 
         _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
