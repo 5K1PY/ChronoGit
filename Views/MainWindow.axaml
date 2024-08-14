@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="using:ChronoGit.Views"
         xmlns:vm="using:ChronoGit.ViewModels"
         xmlns:m="using:ChronoGit.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -19,8 +20,8 @@
     </Design.DataContext>
  
 
-    <Grid RowDefinitions="Auto, *, Auto" x:Name="Root">
-        <DockPanel Grid.Row="0">
+    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,Auto">
+        <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
             <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Preferences">
                 <MenuItem Header="_Remap controls" Click="RemapControls"/>
@@ -36,12 +37,16 @@
             </ItemsControl>
         </ScrollViewer>
         <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Text="No commands left." IsVisible="{Binding CommandsEmpty}"/>
-        <Border Grid.Row="2" BorderBrush="Black" BorderThickness="0,1,0,0">
+                Text="No commands left." IsVisible="{Binding CommandsEmpty}"/>
+        <Border Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="10, *, Auto, 10">
                 <TextBlock Grid.Column="1" Text="{Binding CurrentMode}" FontSize="16"/>
                 <TextBlock Grid.Column="2" Text="{Binding CurrentPosition}" FontSize="16"/>
             </Grid>
         </Border>
+
+        <Grid Grid.Row="1" Grid.Column="1" Width="500">
+            <v:CommitDetailsView DataContext="{Binding CurrentCommit}"/>
+        </Grid>
     </Grid>
 </Window>

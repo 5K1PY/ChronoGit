@@ -53,12 +53,28 @@ public sealed class MainWindowViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _currentMode, value);
     }
     private int _currentPosition = 0;
-    public int CurrentPosition  {
+    public int CurrentPosition {
         get => _currentPosition;
-        set => this.RaiseAndSetIfChanged(ref _currentPosition, value);
+        set {
+            if (_currentPosition != value) {
+                _currentPosition = value;
+                this.RaisePropertyChanged(nameof(CurrentPosition));
+                this.RaisePropertyChanged(nameof(CurrentCommit));
+            }
+        }
     }
     public int VisualModeStartPosition { get; private set; } = 0;
     private string BeforeInsertModeArgument = "";
+    
+    public CommitCommandViewModel? CurrentCommit {
+        get {
+            if (Commands[CurrentPosition] is CommitCommandViewModel ccvm) {
+                return ccvm;
+            } else {
+                return null;
+            } 
+        }
+    }
 
     public int SelectedStart() {
         if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {

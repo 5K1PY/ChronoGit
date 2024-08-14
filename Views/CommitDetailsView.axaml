@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChronoGit.ViewModels"
+             xmlns:m="using:ChronoGit.Models"
+             x:Class="ChronoGit.Views.CommitDetailsView"
+             x:DataType="vm:CommitCommandViewModel">
+
+    <StackPanel Margin="10,0,10,0">
+        <TextBlock Text="{Binding MessageShort}" FontWeight="Bold" />
+        <TextBlock Text="{Binding FullAuthor}" />
+        <TextBlock Text="{Binding Date}" />
+    </StackPanel>
+</UserControl>
