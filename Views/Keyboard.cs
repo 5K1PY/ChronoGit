@@ -14,8 +14,9 @@ public record struct KeyCombination(bool ShiftPressed, bool CtrlPressed, Key Key
 }
 
 public enum ActionType {
-    EnterMode,
-    ExitMode,
+    SwitchViewMode,
+    EnterVimMode,
+    ExitVimMode,
     Move,
     ShiftUp,
     ShiftDown,
@@ -31,6 +32,7 @@ public record class NamedAction(string Name, ActionType ActionType, Action<ViewD
 public record class BoundAction(NamedAction NamedAction, KeyCombination KeyCombination);
 
 public static class ActionDescriptions {
+    public const string COMMIT_DETAILS = "Toggle commit details";
     public const string NORMAL_MODE = "Enter normal mode";
     public const string MOVE_UP = "Move up";
     public const string MOVE_DOWN = "Move down";
@@ -69,6 +71,7 @@ public static class ActionDescriptions {
 public class KeyboardControls {
     private readonly Dictionary<KeyCombination, NamedAction> actions;
     private static readonly ImmutableArray<string> actionOrder = [
+        ActionDescriptions.COMMIT_DETAILS,
         ActionDescriptions.NORMAL_MODE,
         ActionDescriptions.VISUAL_MODE,
         ActionDescriptions.INSERT_MODE,
@@ -114,39 +117,40 @@ public class KeyboardControls {
 
     public static KeyboardControls Default(MainWindowViewModel dataContext) {
         return new KeyboardControls(new List<BoundAction>{
-            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ExitMode,   dataContext.ExitCurrentMode),  new KeyCombination(false, false, Key.Escape)), 
-            new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE,      ActionType.EnterMode,  dataContext.ToggleVisualMode), new KeyCombination(false, false, Key.V)), 
-            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.EnterMode,  dataContext.EnterInsertMode),  new KeyCombination(false, false, Key.I)), 
-            new BoundAction(new NamedAction(ActionDescriptions.MOVE_UP,          ActionType.Move,       dataContext.MoveUp),           new KeyCombination(false, false, Key.Up)), 
-            new BoundAction(new NamedAction(ActionDescriptions.MOVE_DOWN,        ActionType.Move,       dataContext.MoveDown),         new KeyCombination(false, false, Key.Down)), 
-            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_UP,     ActionType.Move,       dataContext.MovePageUp),       new KeyCombination(false, false, Key.PageUp)), 
-            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_DOWN,   ActionType.Move,       dataContext.MovePageDown),     new KeyCombination(false, false, Key.PageDown)), 
-            new BoundAction(new NamedAction(ActionDescriptions.MOVE_TOP,         ActionType.Move,       dataContext.MoveToTop),        new KeyCombination(false, false, Key.Home)), 
-            new BoundAction(new NamedAction(ActionDescriptions.MOVE_BOTTOM,      ActionType.Move,       dataContext.MoveToBottom),     new KeyCombination(false, false, Key.End)), 
-            new BoundAction(new NamedAction(ActionDescriptions.SHIFT_UP,         ActionType.ShiftUp,    dataContext.ShiftUp),          new KeyCombination(false, false, Key.K)), 
-            new BoundAction(new NamedAction(ActionDescriptions.SHIFT_DOWN,       ActionType.ShiftDown,  dataContext.ShiftDown),        new KeyCombination(false, false, Key.J)), 
-            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_PICK,     ActionType.Convert,    dataContext.ConvertToPick),    new KeyCombination(false, false, Key.P)), 
-            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_REWORD,   ActionType.Convert,    dataContext.ConvertToReword),  new KeyCombination(false, false, Key.R)), 
-            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_EDIT,     ActionType.Convert,    dataContext.ConvertToEdit),    new KeyCombination(false, false, Key.E)), 
-            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_SQUASH,   ActionType.Convert,    dataContext.ConvertToSquash),  new KeyCombination(false, false, Key.S)), 
-            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_FIXUP,    ActionType.Convert,    dataContext.ConvertToFixup),   new KeyCombination(false, false, Key.F)), 
-            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_DROP,     ActionType.Convert,    dataContext.ConvertToDrop),    new KeyCombination(false, false, Key.D)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_BREAK_AFTER,  ActionType.Insert,     dataContext.AddBreakAfter),    new KeyCombination(false, false, Key.B)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_BREAK_BEFORE, ActionType.Insert,     dataContext.AddBreakBefore),   new KeyCombination(true,  false, Key.B)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_AFTER,   ActionType.Insert,     dataContext.AddExecAfter),     new KeyCombination(false, false, Key.X)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_BEFORE,  ActionType.Insert,     dataContext.AddExecBefore),    new KeyCombination(true,  false, Key.X)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_AFTER,  ActionType.Insert,     dataContext.AddLabelAfter),    new KeyCombination(false, false, Key.L)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_BEFORE, ActionType.Insert,     dataContext.AddLabelBefore),   new KeyCombination(true,  false, Key.L)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_AFTER,  ActionType.Insert,     dataContext.AddResetAfter),    new KeyCombination(false, false, Key.T)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_BEFORE, ActionType.Insert,     dataContext.AddResetBefore),   new KeyCombination(true,  false, Key.T)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_MERGE_AFTER,  ActionType.Insert,     dataContext.AddMergeAfter),    new KeyCombination(false, false, Key.M)), 
-            new BoundAction(new NamedAction(ActionDescriptions.ADD_MERGE_BEFORE, ActionType.Insert,     dataContext.AddMergeBefore),   new KeyCombination(true,  false, Key.M)), 
-            new BoundAction(new NamedAction(ActionDescriptions.DELETE,           ActionType.Delete,     dataContext.Delete),           new KeyCombination(false, false, Key.Delete)), 
-            new BoundAction(new NamedAction(ActionDescriptions.UNDO,             ActionType.History,    dataContext.Undo),             new KeyCombination(false, false, Key.U)), 
-            new BoundAction(new NamedAction(ActionDescriptions.REDO,             ActionType.History,    dataContext.Redo),             new KeyCombination(false, true,  Key.R)), 
-            new BoundAction(new NamedAction(ActionDescriptions.COLOR_SAME,       ActionType.Color,      dataContext.ColorSame),        new KeyCombination(false, true,  Key.S)), 
-            new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_AUTHOR,  ActionType.Color,      dataContext.ColorByAuthor),    new KeyCombination(false, true,  Key.A)), 
-            new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_DATE,    ActionType.Color,      dataContext.ColorByDate),      new KeyCombination(false, true,  Key.D)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COMMIT_DETAILS,   ActionType.SwitchViewMode, dataContext.ToggleCommitDetails), new KeyCombination(false, true,  Key.C)), 
+            new BoundAction(new NamedAction(ActionDescriptions.NORMAL_MODE,      ActionType.ExitVimMode,    dataContext.ExitCurrentMode),     new KeyCombination(false, false, Key.Escape)), 
+            new BoundAction(new NamedAction(ActionDescriptions.VISUAL_MODE,      ActionType.EnterVimMode,   dataContext.ToggleVisualMode),    new KeyCombination(false, false, Key.V)), 
+            new BoundAction(new NamedAction(ActionDescriptions.INSERT_MODE,      ActionType.EnterVimMode,   dataContext.EnterInsertMode),     new KeyCombination(false, false, Key.I)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_UP,          ActionType.Move,           dataContext.MoveUp),              new KeyCombination(false, false, Key.Up)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_DOWN,        ActionType.Move,           dataContext.MoveDown),            new KeyCombination(false, false, Key.Down)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_UP,     ActionType.Move,           dataContext.MovePageUp),          new KeyCombination(false, false, Key.PageUp)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_PAGE_DOWN,   ActionType.Move,           dataContext.MovePageDown),        new KeyCombination(false, false, Key.PageDown)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_TOP,         ActionType.Move,           dataContext.MoveToTop),           new KeyCombination(false, false, Key.Home)), 
+            new BoundAction(new NamedAction(ActionDescriptions.MOVE_BOTTOM,      ActionType.Move,           dataContext.MoveToBottom),        new KeyCombination(false, false, Key.End)), 
+            new BoundAction(new NamedAction(ActionDescriptions.SHIFT_UP,         ActionType.ShiftUp,        dataContext.ShiftUp),             new KeyCombination(false, false, Key.K)), 
+            new BoundAction(new NamedAction(ActionDescriptions.SHIFT_DOWN,       ActionType.ShiftDown,      dataContext.ShiftDown),           new KeyCombination(false, false, Key.J)), 
+            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_PICK,     ActionType.Convert,        dataContext.ConvertToPick),       new KeyCombination(false, false, Key.P)), 
+            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_REWORD,   ActionType.Convert,        dataContext.ConvertToReword),     new KeyCombination(false, false, Key.R)), 
+            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_EDIT,     ActionType.Convert,        dataContext.ConvertToEdit),       new KeyCombination(false, false, Key.E)), 
+            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_SQUASH,   ActionType.Convert,        dataContext.ConvertToSquash),     new KeyCombination(false, false, Key.S)), 
+            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_FIXUP,    ActionType.Convert,        dataContext.ConvertToFixup),      new KeyCombination(false, false, Key.F)), 
+            new BoundAction(new NamedAction(ActionDescriptions.CONVERT_DROP,     ActionType.Convert,        dataContext.ConvertToDrop),       new KeyCombination(false, false, Key.D)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_BREAK_AFTER,  ActionType.Insert,         dataContext.AddBreakAfter),       new KeyCombination(false, false, Key.B)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_BREAK_BEFORE, ActionType.Insert,         dataContext.AddBreakBefore),      new KeyCombination(true,  false, Key.B)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_AFTER,   ActionType.Insert,         dataContext.AddExecAfter),        new KeyCombination(false, false, Key.X)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_EXEC_BEFORE,  ActionType.Insert,         dataContext.AddExecBefore),       new KeyCombination(true,  false, Key.X)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_AFTER,  ActionType.Insert,         dataContext.AddLabelAfter),       new KeyCombination(false, false, Key.L)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_LABEL_BEFORE, ActionType.Insert,         dataContext.AddLabelBefore),      new KeyCombination(true,  false, Key.L)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_AFTER,  ActionType.Insert,         dataContext.AddResetAfter),       new KeyCombination(false, false, Key.T)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_RESET_BEFORE, ActionType.Insert,         dataContext.AddResetBefore),      new KeyCombination(true,  false, Key.T)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_MERGE_AFTER,  ActionType.Insert,         dataContext.AddMergeAfter),       new KeyCombination(false, false, Key.M)), 
+            new BoundAction(new NamedAction(ActionDescriptions.ADD_MERGE_BEFORE, ActionType.Insert,         dataContext.AddMergeBefore),      new KeyCombination(true,  false, Key.M)), 
+            new BoundAction(new NamedAction(ActionDescriptions.DELETE,           ActionType.Delete,         dataContext.Delete),              new KeyCombination(false, false, Key.Delete)), 
+            new BoundAction(new NamedAction(ActionDescriptions.UNDO,             ActionType.History,        dataContext.Undo),                new KeyCombination(false, false, Key.U)), 
+            new BoundAction(new NamedAction(ActionDescriptions.REDO,             ActionType.History,        dataContext.Redo),                new KeyCombination(false, true,  Key.R)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COLOR_SAME,       ActionType.Color,          dataContext.ColorSame),           new KeyCombination(false, true,  Key.S)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_AUTHOR,  ActionType.Color,          dataContext.ColorByAuthor),       new KeyCombination(false, true,  Key.A)), 
+            new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_DATE,    ActionType.Color,          dataContext.ColorByDate),         new KeyCombination(false, true,  Key.D)), 
         });
     }
 

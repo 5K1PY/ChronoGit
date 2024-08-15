@@ -22,8 +22,6 @@ public sealed class FileChangeViewModel : ViewModelBase {
         ) + 5;
         int maxLineNumLength = maxLineNumber.ToString().Length;
         
-        Console.WriteLine(maxLineNumLength);
-
         var lines = patchEntries.Content.Split('\n');
         int lineAdditionsNumber = 0;
         int lineDeletionsNumber = 0;

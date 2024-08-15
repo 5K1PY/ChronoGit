@@ -21,6 +21,22 @@ public class StringToIntConverter : IValueConverter {
     }
 }
 
+public class BoolPlusOneConverter : IValueConverter {
+    object? IValueConverter.Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+        if (value is bool boolValue) {
+            return boolValue ? 2 : 1;
+        }
+        return 0;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
+        if (value is int intValue) {
+            return intValue == 2;
+        }
+        return false;
+    }
+}
+
 public class SelectionToColorConverter : IValueConverter {
     object? IValueConverter.Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
         if (value is bool boolValue) {

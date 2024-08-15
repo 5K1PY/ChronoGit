@@ -10,10 +10,15 @@ namespace ChronoGit.ViewModels;
 
 public record class ViewData(int CommandsPerPage);
 
-public enum Mode {
+public enum VimMode {
     NormalMode,
     InsertMode,
     VisualMode
+};
+
+public enum ViewMode {
+    JustCommands,
+    CommitDetails
 };
 
 public sealed class MainWindowViewModel : ViewModelBase {
@@ -47,10 +52,30 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
     }
 
-    private Mode _currentMode = Mode.NormalMode;
-    public Mode CurrentMode {
-        get => _currentMode;
-        set => this.RaiseAndSetIfChanged(ref _currentMode, value);
+    private ViewMode _viewMode = ViewMode.JustCommands;
+    public ViewMode ViewMode {
+        get => _viewMode;
+        set {
+            if (_viewMode != value) {
+                _viewMode = value;
+                this.RaisePropertyChanged(nameof(ViewMode));
+                this.RaisePropertyChanged(nameof(SplitView));
+                this.RaisePropertyChanged(nameof(ShowCommitDetails));
+            }
+        }
+    }
+    public bool SplitView => ViewMode != ViewMode.JustCommands; 
+    public bool ShowCommitDetails => ViewMode == ViewMode.CommitDetails;
+
+    public void ToggleCommitDetails(ViewData _) {
+        Console.WriteLine("here");
+        ViewMode = ViewMode == ViewMode.CommitDetails ? ViewMode.JustCommands : ViewMode.CommitDetails;
+    }
+
+    private VimMode _vimMode = VimMode.NormalMode;
+    public VimMode VimMode {
+        get => _vimMode;
+        set => this.RaiseAndSetIfChanged(ref _vimMode, value);
     }
     private int _currentPosition = 0;
     public int CurrentPosition {
@@ -77,9 +102,9 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     public int SelectedStart() {
-        if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
+        if (VimMode == VimMode.NormalMode || VimMode == VimMode.InsertMode) {
             return CurrentPosition;
-        } else if (CurrentMode == Mode.VisualMode) {
+        } else if (VimMode == VimMode.VisualMode) {
             return Math.Min(CurrentPosition, VisualModeStartPosition);
         }
         throw new NotImplementedException();
@@ -87,9 +112,9 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
     public int SelectedEnd() {
         if (Commands.Count == 0) return -1;
-        if (CurrentMode == Mode.NormalMode || CurrentMode == Mode.InsertMode) {
+        if (VimMode == VimMode.NormalMode || VimMode == VimMode.InsertMode) {
             return CurrentPosition;
-        } else if (CurrentMode == Mode.VisualMode) {
+        } else if (VimMode == VimMode.VisualMode) {
             return Math.Max(CurrentPosition, VisualModeStartPosition);
         }
         throw new NotImplementedException();
@@ -106,20 +131,20 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     public void NormalMode() {
-        if (CurrentMode == Mode.VisualMode) {
+        if (VimMode == VimMode.VisualMode) {
             foreach (int i in SelectedRange()) {
                 if (i != CurrentPosition) {
                     Commands[i].Selected = false;
                 }
             }
-        } else if (CurrentMode == Mode.InsertMode) {
+        } else if (VimMode == VimMode.InsertMode) {
             Act(new ChangeArgumentLog(
                 CurrentPosition,
                 BeforeInsertModeArgument,
                 (Commands[CurrentPosition] as ArgumentCommandViewModel)!.Argument
             ));
         }
-        CurrentMode = Mode.NormalMode;
+        VimMode = VimMode.NormalMode;
     }
 
     public void ExitCurrentMode(ViewData _) {
@@ -127,8 +152,8 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     public void ToggleVisualMode(ViewData _) {
-        if (CurrentMode == Mode.NormalMode) {
-            CurrentMode = Mode.VisualMode;
+        if (VimMode == VimMode.NormalMode) {
+            VimMode = VimMode.VisualMode;
             VisualModeStartPosition = CurrentPosition;
         } else {
             NormalMode();
@@ -136,11 +161,11 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     public void InsertMode() {
-        if (CurrentMode != Mode.NormalMode) return;
+        if (VimMode != VimMode.NormalMode) return;
 
         ArgumentCommandViewModel? acvm = Commands[CurrentPosition] as ArgumentCommandViewModel;
         if (acvm is not null) {
-            CurrentMode = Mode.InsertMode;
+            VimMode = VimMode.InsertMode;
             BeforeInsertModeArgument = acvm.Argument;
         }
     }
@@ -156,7 +181,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         for (int i=Math.Min(targetPosition, CurrentPosition); i<=Math.Max(targetPosition, CurrentPosition); i++) {
             Commands[i].Selected = (
                 i == targetPosition ||
-                CurrentMode == Mode.VisualMode &&
+                VimMode == VimMode.VisualMode &&
                 Math.Min(targetPosition, VisualModeStartPosition) <= i &&
                 i <= Math.Max(targetPosition, VisualModeStartPosition)
             );
@@ -242,7 +267,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         replace.Add(Commands[SelectedStart()-1]);
         Act(new ReplaceRangeLog(Commands, SelectedStart()-1, replace, positionBefore: SelectedStart()));
 
-        if (CurrentMode == Mode.VisualMode) {
+        if (VimMode == VimMode.VisualMode) {
             Commands[VisualModeStartPosition--].Selected = CurrentPosition > VisualModeStartPosition;
             Commands[VisualModeStartPosition].Selected = true;
         }
@@ -256,7 +281,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
         replace.Insert(0, Commands[SelectedEnd()+1]);
         Act(new ReplaceRangeLog(Commands, SelectedStart(), replace, positionAfter: SelectedStart()+1));
 
-        if (CurrentMode == Mode.VisualMode) {
+        if (VimMode == VimMode.VisualMode) {
             Commands[VisualModeStartPosition++].Selected = CurrentPosition < VisualModeStartPosition;
             Commands[VisualModeStartPosition].Selected = true;
         }

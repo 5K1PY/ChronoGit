@@ -36,9 +36,9 @@ public sealed partial class MainWindow : WindowBase {
         NamedAction? action = controls!.GetAction(currentKeyCombination);
 
         if (
-            dataContext!.CurrentMode != Mode.InsertMode ||
+            dataContext!.VimMode != VimMode.InsertMode ||
             currentKeyCombination.CtrlPressed || 
-            action?.ActionType == ActionType.ExitMode
+            action?.ActionType == ActionType.ExitVimMode
         ) {
             e.Handled = true;
         } else {
@@ -73,7 +73,7 @@ public sealed partial class MainWindow : WindowBase {
         Control? control = CommandsView.ContainerFromIndex(dataContext!.CurrentPosition);
         control?.UpdateLayout(); // FindDescendant doesn't work on not yet updated
         TextBox? FocusBox = control?.FindDescendant<TextBox>("FocusHere");
-        if (dataContext.CurrentMode == Mode.InsertMode && FocusBox != null) {
+        if (dataContext.VimMode == VimMode.InsertMode && FocusBox != null) {
             FocusBox.Focus();
         } else {
             FocusManager!.ClearFocus();
