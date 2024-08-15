@@ -112,4 +112,14 @@ public sealed partial class MainWindow : WindowBase {
             dataContext!.ColorByRegex(GetViewData(), data2.Regex, data2.Group);
         }
     }
+
+    private void Finish(object sender, RoutedEventArgs e) {
+        dataContext!.Finish();
+        Close();
+    }
+
+    private void Abort(object sender, RoutedEventArgs e) {
+        dataContext!.Abort();
+        Close();
+    }
 }

@@ -23,6 +23,7 @@ public enum ViewMode {
 };
 
 public sealed class MainWindowViewModel : ViewModelBase {
+    private Repo Repo { get; init; }
     private ObservableCollection<CommandViewModel> _commands;
     public ObservableCollection<CommandViewModel> Commands {
         get => _commands;
@@ -37,19 +38,28 @@ public sealed class MainWindowViewModel : ViewModelBase {
         }
     }
     public bool CommandsEmpty => !Commands.Any();
+    public void Finish() {
+        Repo.Export(Commands.Select(c => c.Command));
+        Repo.Dispose();
+    }
+    
+    public void Abort() {
+        Repo.Abort();
+        Repo.Dispose();
+    }
 
     public CommitColor DefaultCommitColor = CommitColor.Red;
     public MainWindowViewModel(string filePath) {
-        var repo = new Repo(Repository.Discover(filePath));
-        var commits = repo.GetCommits(filePath);
+        Repo = new Repo(filePath);
+        var commits = Repo.GetCommits();
 
         _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
-            _commands.Add(new PickViewModel(action, DefaultCommitColor, repo.repo));
+            _commands.Add(new PickViewModel(action, DefaultCommitColor, Repo.repo));
         }
-        _commands[0].Selected = true;
+        if(_commands.Count > 0)
+            _commands[0].Selected = true;
         Commands.CollectionChanged += (s, e) => this.RaisePropertyChanged(nameof(CommandsEmpty));
-
     }
 
     private ViewMode _viewMode = ViewMode.JustCommands;

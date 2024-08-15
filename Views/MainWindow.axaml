@@ -26,16 +26,21 @@
 
     <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*">
         <Border Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="0,0,0,1">
-            <DockPanel>
-                <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_Preferences">
-                    <MenuItem Header="_Remap controls" Click="RemapControls"/>
-                </MenuItem>
-                <MenuItem Header="_View">
-                    <MenuItem Header="_Commit colors" Click="ChangeCommitColors"/>
-                </MenuItem>
-                </Menu>
-            </DockPanel>
+            <Grid ColumnDefinitions="*,Auto">
+                <DockPanel><Menu>
+                    <MenuItem Header="_Preferences" DockPanel.Dock="Left">
+                        <MenuItem Header="_Remap controls" Click="RemapControls"/>
+                    </MenuItem>
+                    <MenuItem Header="_View" DockPanel.Dock="Left">
+                        <MenuItem Header="_Commit colors" Click="ChangeCommitColors"/>
+                    </MenuItem>
+                </Menu></DockPanel>
+
+                <DockPanel Grid.Column="1"><Menu>
+                    <MenuItem Header="_Abort" Click="Abort"></MenuItem>
+                    <MenuItem Header="_Finish" Click="Finish"></MenuItem>
+                </Menu></DockPanel>
+            </Grid>
         </Border>
 
         <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="{Binding !SplitView, Converter={StaticResource BoolPlusOneConverter}}" Name="ScrollCommands">
