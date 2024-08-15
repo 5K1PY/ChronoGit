@@ -1,4 +1,5 @@
 using LibGit2Sharp;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -8,19 +9,20 @@ namespace ChronoGit.Models;
 public class Repo(string path) {
     public Repository repo { get; init;} = new(path);
 
-    public IEnumerable<PickCommand> GetCommits(string until_label) {
+    public IEnumerable<PickCommand> GetCommits(string filePath) {
         List<PickCommand> actions = new();
 
-        Commit? until = repo.Lookup<Commit>(until_label);
-        var commits = repo.Commits.QueryBy(new CommitFilter {
-            ExcludeReachableFrom = until,
-            SortBy = CommitSortStrategies.Topological
-        });
-        foreach (Commit c in commits) {
-            if (c.Parents.Count() <= 1)
-                actions.Add(new PickCommand(c));
+        using (StreamReader reader = new StreamReader(filePath)) {
+            string? line;
+            while ((line = reader.ReadLine()) != null) {
+                if (line.StartsWith("pick")) {
+                    string[] parts = line.Split(" ");
+                    actions.Add(new PickCommand(repo.Lookup<Commit>(parts[1])));
+
+                }
+            }
         }
-        actions.Reverse();
+
         return actions;
     }
 }

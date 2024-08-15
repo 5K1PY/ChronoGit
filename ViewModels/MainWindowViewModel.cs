@@ -5,6 +5,7 @@ using ReactiveUI;
 using ChronoGit.Models;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LibGit2Sharp;
 
 namespace ChronoGit.ViewModels;
 
@@ -38,10 +39,9 @@ public sealed class MainWindowViewModel : ViewModelBase {
     public bool CommandsEmpty => !Commands.Any();
 
     public CommitColor DefaultCommitColor = CommitColor.Red;
-    public MainWindowViewModel() {
-        // TODO
-        var repo = new Repo("/home/skipy/dev/pisek");
-        var commits = repo.GetCommits("HEAD~10");
+    public MainWindowViewModel(string filePath) {
+        var repo = new Repo(Repository.Discover(filePath));
+        var commits = repo.GetCommits(filePath);
 
         _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
