@@ -23,6 +23,9 @@ public class Repo(string path) {
             }
         }
 
+        // Clear file so we don't do anything on close
+        File.WriteAllText(filePath, "");
+
         return actions;
     }
 }
