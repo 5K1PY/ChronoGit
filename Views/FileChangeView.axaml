@@ -6,11 +6,13 @@
              x:DataType="vm:FileChangeViewModel">
 
     <Expander Header="{Binding Filename}" Margin="0,10,0,0" HorizontalAlignment="Stretch">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
         <ItemsControl ItemsSource="{Binding Diff}">
             <ItemsControl.ItemTemplate><DataTemplate>
                 <TextBlock Foreground="{Binding Color}" Text="{Binding Content}" FontFamily="Courier New"/>
             </DataTemplate></ItemsControl.ItemTemplate>
         </ItemsControl>
+        </ScrollViewer>
     </Expander>
 
 </UserControl>

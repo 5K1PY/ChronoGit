@@ -5,14 +5,14 @@
              x:Class="ChronoGit.Views.CommitDetailsView"
              x:DataType="vm:CommitCommandViewModel">
 
-        <StackPanel Margin="10">
-            <TextBlock Text="{Binding Message}" FontWeight="Bold" FontSize="20" Height="80"/>
-            <TextBlock Text="{Binding FullAuthor}" />
-            <TextBlock Text="{Binding FullDateTime}" />
-            <ScrollViewer>
+        <Grid RowDefinitions="80, 20, 20, *" Margin="10">
+            <TextBlock Grid.Row="0" Text="{Binding Message}" FontWeight="Bold" FontSize="20"/>
+            <TextBlock Grid.Row="1" Text="{Binding FullAuthor}" />
+            <TextBlock Grid.Row="2" Text="{Binding FullDateTime}"/>
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding CommitChanges}">
                 </ItemsControl>
             </ScrollViewer>
-        </StackPanel>
+        </Grid>
 
 </UserControl>
