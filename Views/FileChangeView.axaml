@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChronoGit.ViewModels"
+             xmlns:m="using:ChronoGit.Models"
+             x:Class="ChronoGit.Views.FileChangeView"
+             x:DataType="vm:FileChangeViewModel">
+
+    <Expander Header="{Binding Filename}" Margin="0,10,0,0" HorizontalAlignment="Stretch">
+        <ItemsControl ItemsSource="{Binding Diff}">
+            <ItemsControl.ItemTemplate><DataTemplate>
+                <TextBlock Foreground="{Binding Color}" Text="{Binding Content}" FontFamily="Courier New"/>
+            </DataTemplate></ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Expander>
+
+</UserControl>

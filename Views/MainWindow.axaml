@@ -20,17 +20,19 @@
     </Design.DataContext>
  
 
-    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,Auto">
-        <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
-            <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Preferences">
-                <MenuItem Header="_Remap controls" Click="RemapControls"/>
-            </MenuItem>
-            <MenuItem Header="_View">
-                <MenuItem Header="_Commit colors" Click="ChangeCommitColors"/>
-            </MenuItem>
-            </Menu>
-        </DockPanel>
+    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*">
+        <Border Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="0,0,0,1">
+            <DockPanel>
+                <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_Preferences">
+                    <MenuItem Header="_Remap controls" Click="RemapControls"/>
+                </MenuItem>
+                <MenuItem Header="_View">
+                    <MenuItem Header="_Commit colors" Click="ChangeCommitColors"/>
+                </MenuItem>
+                </Menu>
+            </DockPanel>
+        </Border>
 
         <ScrollViewer Grid.Row="1" Grid.Column="0" Name="ScrollCommands">
             <ItemsControl Name="CommandsView" ItemsSource="{Binding Commands}">
@@ -45,8 +47,10 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" Grid.Column="1" Width="500">
-            <v:CommitDetailsView DataContext="{Binding CurrentCommit}"/>
-        </Grid>
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0">
+            <Grid>
+                <v:CommitDetailsView DataContext="{Binding CurrentCommit}"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

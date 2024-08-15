@@ -36,11 +36,11 @@ public sealed class MainWindowViewModel : ViewModelBase {
     public MainWindowViewModel() {
         // TODO
         var repo = new Repo("/home/skipy/dev/pisek");
-        var commits = repo.GetCommits("798c2");
+        var commits = repo.GetCommits("HEAD~10");
 
         _commands = new ObservableCollection<CommandViewModel>();
         foreach (PickCommand action in commits) {
-            _commands.Add(new PickViewModel(action, DefaultCommitColor));
+            _commands.Add(new PickViewModel(action, DefaultCommitColor, repo.repo));
         }
         _commands[0].Selected = true;
         Commands.CollectionChanged += (s, e) => this.RaisePropertyChanged(nameof(CommandsEmpty));

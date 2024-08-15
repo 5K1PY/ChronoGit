@@ -6,7 +6,7 @@ namespace ChronoGit.Models;
 
 // TODO: IDisposable
 public class Repo(string path) {
-    private Repository repo = new(path);
+    public Repository repo { get; init;} = new(path);
 
     public IEnumerable<PickCommand> GetCommits(string until_label) {
         List<PickCommand> actions = new();
