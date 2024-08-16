@@ -17,8 +17,7 @@ public class Repo(string todoListFilePath) : IDisposable {
             while ((line = reader.ReadLine()) != null) {
                 if (line.StartsWith("pick")) {
                     string[] parts = line.Split(" ");
-                    actions.Add(new PickCommand(repo.Lookup<Commit>(parts[1])));
-
+                    actions.Add(new PickCommand(repo.Lookup<Commit>(parts[1]), null));
                 }
             }
         }

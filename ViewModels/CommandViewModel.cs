@@ -5,6 +5,7 @@ using System.Globalization;
 using LibGit2Sharp;
 using System.Linq;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace ChronoGit.ViewModels;
 
@@ -104,8 +105,30 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
             }
         }
     }
-    public string IconPath => $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
+    public virtual string IconPath => $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
 }
+
+public abstract partial class CommittingCommandViewModel : CommitCommandViewModel {
+    protected internal CommittingCommand CommittingCommand => (CommittingCommand) Command;
+    public override string IconPath {
+        get {
+            string text = $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}";
+            if (CommittingCommand.GlobalCommand is ExecCommand) {
+                text += "_exec";
+            } else if (CommittingCommand.GlobalCommand is BreakCommand) {
+                text += "_break";
+            }
+            return $"{text}.svg";
+        }
+    }
+    public void SetGlobalCommand(Command? globalCommand) {
+        if (globalCommand != CommittingCommand.GlobalCommand) {
+            CommittingCommand.GlobalCommand = globalCommand;
+            this.RaisePropertyChanged(nameof(IconPath));
+        }
+    }
+}
+
 public abstract partial class ArgumentCommandViewModel : CommandViewModel {
     protected internal ArgumentCommand ArgumentCommand => (ArgumentCommand) Command;
     public string Argument {
@@ -119,7 +142,7 @@ public abstract partial class ArgumentCommandViewModel : CommandViewModel {
     }
 }
 
-public sealed partial class PickViewModel : CommitCommandViewModel {
+public sealed partial class PickViewModel : CommittingCommandViewModel {
     protected internal override Command Command { get; set; }
     internal PickCommand PickCommand => (PickCommand) Command;
     protected override string IconFilePrefix { get; init; } = "pick";
@@ -132,7 +155,7 @@ public sealed partial class PickViewModel : CommitCommandViewModel {
     }
 }
 
-public sealed partial class RewordViewModel : CommitCommandViewModel {
+public sealed partial class RewordViewModel : CommittingCommandViewModel {
     protected internal override Command Command { get; set; }
     internal RewordCommand RewordCommand => (RewordCommand) Command;
     protected override string IconFilePrefix { get; init; } = "reword";
@@ -145,7 +168,7 @@ public sealed partial class RewordViewModel : CommitCommandViewModel {
     }
 }
 
-public sealed partial class EditViewModel : CommitCommandViewModel {
+public sealed partial class EditViewModel : CommittingCommandViewModel {
     protected internal override Command Command { get; set; }
     internal EditCommand EditCommand => (EditCommand) Command;
     protected override string IconFilePrefix { get; init; } = "edit";
@@ -251,27 +274,27 @@ public sealed partial class MergeViewModel : ArgumentCommandViewModel {
 }
 
 public static class CommitCommandConversions {
-    public static PickViewModel ToPick(this CommitCommandViewModel ccvm) {
-        return new PickViewModel(new PickCommand(ccvm.CommitCommand.CommandCommit), ccvm.Color, ccvm.Repository);
+    public static PickViewModel ToPick(this CommitCommandViewModel ccvm, Command? globalCommand) {
+        return new PickViewModel(new PickCommand(ccvm.CommitCommand.CommandCommit, globalCommand), ccvm.Color, ccvm.Repository);
     }
 
-    public static RewordViewModel ToReword(this CommitCommandViewModel ccvm) {
-        return new RewordViewModel(new RewordCommand(ccvm.CommitCommand.CommandCommit), ccvm.Color, ccvm.Repository);
+    public static RewordViewModel ToReword(this CommitCommandViewModel ccvm, Command? globalCommand) {
+        return new RewordViewModel(new RewordCommand(ccvm.CommitCommand.CommandCommit, globalCommand), ccvm.Color, ccvm.Repository);
     }
 
-    public static EditViewModel ToEdit(this CommitCommandViewModel ccvm) {
-        return new EditViewModel(new EditCommand(ccvm.CommitCommand.CommandCommit), ccvm.Color, ccvm.Repository);
+    public static EditViewModel ToEdit(this CommitCommandViewModel ccvm, Command? globalCommand) {
+        return new EditViewModel(new EditCommand(ccvm.CommitCommand.CommandCommit, globalCommand), ccvm.Color, ccvm.Repository);
     }
 
-    public static SquashViewModel ToSquash(this CommitCommandViewModel ccvm) {
+    public static SquashViewModel ToSquash(this CommitCommandViewModel ccvm, Command? _) {
         return new SquashViewModel(new SquashCommand(ccvm.CommitCommand.CommandCommit), ccvm.Color, ccvm.Repository);
     }
 
-    public static FixupViewModel ToFixup(this CommitCommandViewModel ccvm) {
+    public static FixupViewModel ToFixup(this CommitCommandViewModel ccvm, Command? _) {
         return new FixupViewModel(new FixupCommand(ccvm.CommitCommand.CommandCommit), ccvm.Color, ccvm.Repository);
     }
 
-    public static DropViewModel ToDrop(this CommitCommandViewModel ccvm) {
+    public static DropViewModel ToDrop(this CommitCommandViewModel ccvm, Command? _) {
         return new DropViewModel(new DropCommand(ccvm.CommitCommand.CommandCommit), ccvm.Color, ccvm.Repository);
     }
 }

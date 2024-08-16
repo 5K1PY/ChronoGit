@@ -226,12 +226,12 @@ public sealed class MainWindowViewModel : ViewModelBase {
     int historyPosition = 0;
     private List<ActionLog> history = [];
 
-    private void RunAction(Action<ObservableCollection<CommandViewModel>> action) {
+    private void RunAction(Action<MainWindowViewModel> action) {
         foreach (int i in SelectedRange()) {
             Commands[i].Selected = false;
         }
 
-        action(Commands);
+        action(this);
         CurrentPosition = Math.Max(0, Math.Min(CurrentPosition, Commands.Count-1));
         VisualModeStartPosition = Math.Max(0, Math.Min(VisualModeStartPosition, Commands.Count-1));
 
@@ -256,7 +256,10 @@ public sealed class MainWindowViewModel : ViewModelBase {
         if (historyPosition > 0) {
             historyPosition--;
             RunAction(history[historyPosition].UndoChange);
-            MovePositionTo(history[historyPosition].PositionBefore);
+
+            int? pos = history[historyPosition].PositionBefore;
+            if (pos is not null) MovePositionTo((int) pos);
+            
             NormalMode();
         }
     }
@@ -264,7 +267,10 @@ public sealed class MainWindowViewModel : ViewModelBase {
     public void Redo(ViewData _) {
         if (historyPosition < history.Count) {
             RunAction(history[historyPosition].Change);
-            MovePositionTo(history[historyPosition].PositionAfter);
+
+            int? pos = history[historyPosition].PositionAfter;
+            if (pos is not null) MovePositionTo((int) pos);
+
             historyPosition++;
             NormalMode();
         }
@@ -306,13 +312,13 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
     // Conversions
 
-    private delegate CommandViewModel ConvertCommitCommand(CommitCommandViewModel ccvm);
+    private delegate CommandViewModel ConvertCommitCommand(CommitCommandViewModel ccvm, Command? GlobalCommand);
     private void ConvertCommitCommands(ConvertCommitCommand convert) {
         List<CommandViewModel> replaced = [];
         foreach (int pos in SelectedRange()) {
             CommitCommandViewModel? ccvm = Commands[pos] as CommitCommandViewModel;
             replaced.Add(
-                ccvm != null ? convert(ccvm) : Commands[pos]
+                ccvm != null ? convert(ccvm, GlobalCommand) : Commands[pos]
             );
         }
         Act(new ReplaceRangeLog(Commands, SelectedStart(), replaced));
@@ -442,5 +448,22 @@ public sealed class MainWindowViewModel : ViewModelBase {
             if (match.Success) return match.Groups[group].Value;
             else return "";
         });
+    }
+
+    private Command? _globalCommand = null;
+    public Command? GlobalCommand { 
+        get => _globalCommand;
+        set {
+            foreach (CommandViewModel command in Commands) {
+                if (command is CommittingCommandViewModel c) {
+                    c.SetGlobalCommand(value);
+                }
+            }
+            _globalCommand = value;
+        }
+    }
+
+    public void ChangeGlobalCommand(Command? newGlobalCommand) {
+        Act(new ChangeGlobalCommandLog(GlobalCommand, newGlobalCommand));
     }
 }

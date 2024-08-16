@@ -28,12 +28,9 @@
         <Border Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="0,0,0,1">
             <Grid ColumnDefinitions="*,Auto">
                 <DockPanel><Menu>
-                    <MenuItem Header="_Preferences" DockPanel.Dock="Left">
-                        <MenuItem Header="_Remap controls" Click="RemapControls"/>
-                    </MenuItem>
-                    <MenuItem Header="_View" DockPanel.Dock="Left">
-                        <MenuItem Header="_Commit colors" Click="ChangeCommitColors"/>
-                    </MenuItem>
+                    <MenuItem Header="_Remap controls" Click="RemapControls"/>
+                    <MenuItem Header="_Commit colors" Click="ChangeCommitColors"/>
+                    <MenuItem Header="_Global commands" Click="ChangeGlobalCommand"/>
                 </Menu></DockPanel>
 
                 <DockPanel Grid.Column="1"><Menu>

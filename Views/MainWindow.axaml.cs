@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ChronoGit.ViewModels;
+using ChronoGit.Models;
 
 namespace ChronoGit.Views;
 
@@ -126,6 +127,15 @@ public sealed partial class MainWindow : WindowBase {
             dataContext!.ColorByDate(GetViewData());
         } else if (data is ColorByRegexData data2) {
             dataContext!.ColorByRegex(GetViewData(), data2.Regex, data2.Group);
+        }
+    }
+    private async void ChangeGlobalCommand(object sender, RoutedEventArgs e) {
+        GlobalCommandWindow window = new() {
+            DataContext = new GlobalCommandViewModel(dataContext!.GlobalCommand)
+        };
+        Tuple<Command?>? data = await window.ShowDialog<Tuple<Command?>?>(this);
+        if (data is not null) {
+            dataContext!.ChangeGlobalCommand(data.Item1);
         }
     }
 

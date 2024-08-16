@@ -19,8 +19,7 @@ public abstract class Command {
 }
 
 public abstract class CommitCommand : Command {
-    public abstract Commit CommandCommit { get; set; }
-
+    public abstract Commit CommandCommit { get; init; }
     protected abstract string ExportText { get; init; }
     public override string Export() => $"{ExportText} {CommandCommit.Sha} {CommandCommit.MessageShort}";
 
@@ -51,33 +50,45 @@ public abstract class ArgumentCommand : Command {
     }
 }
 
-public sealed class PickCommand(Commit commit) : CommitCommand {
-    public override Commit CommandCommit { get; set; } = commit;
+public abstract class CommittingCommand : CommitCommand {
+    public abstract Command? GlobalCommand { get; set; }
+    public override string Export() {
+        string text = base.Export();
+        if (GlobalCommand is not null) text += "\n" + GlobalCommand.Export();
+        return text;
+    }
+}
+
+public sealed class PickCommand(Commit commit, Command? globalCommand) : CommittingCommand {
+    public override Commit CommandCommit { get; init; } = commit;
+    public override Command? GlobalCommand { get; set; } = globalCommand;
     protected override string ExportText { get; init; } = "pick";
 }
 
-public sealed class RewordCommand(Commit commit) : CommitCommand {
-    public override Commit CommandCommit { get; set; } = commit;
+public sealed class RewordCommand(Commit commit, Command? globalCommand) : CommittingCommand {
+    public override Commit CommandCommit { get; init; } = commit;
+    public override Command? GlobalCommand { get; set; } = globalCommand;
     protected override string ExportText { get; init; } = "reword";
 }
 
-public sealed class EditCommand(Commit commit) : CommitCommand {
-    public override Commit CommandCommit { get; set; } = commit;
+public sealed class EditCommand(Commit commit, Command? globalCommand) : CommittingCommand {
+    public override Commit CommandCommit { get; init; } = commit;
+    public override Command? GlobalCommand { get; set; } = globalCommand;
     protected override string ExportText { get; init; } = "edit";
 }
 
 public sealed class SquashCommand(Commit commit) : CommitCommand {
-    public override Commit CommandCommit { get; set; } = commit;
+    public override Commit CommandCommit { get; init; } = commit;
     protected override string ExportText { get; init; } = "squash";
 }
 
 public sealed class FixupCommand(Commit commit) : CommitCommand {
-    public override Commit CommandCommit { get; set; } = commit;
+    public override Commit CommandCommit { get; init; } = commit;
     protected override string ExportText { get; init; } = "fixup";
 }
 
 public sealed class DropCommand(Commit commit) : CommitCommand {
-    public override Commit CommandCommit { get; set; } = commit;
+    public override Commit CommandCommit { get; init; } = commit;
     protected override string ExportText { get; init; } = "drop";
 }
 

@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="using:ChronoGit.Views"
+        xmlns:vm="using:ChronoGit.ViewModels"
+        xmlns:m="using:ChronoGit.Models"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Width="400" Height="200"
+        x:Class="ChronoGit.Views.GlobalCommandWindow"
+        x:DataType="vm:GlobalCommandViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ChronoGit - Global command"
+        KeyDown="WindowKeyDown"
+        KeyUp="WindowKeyUp">
+
+    <Design.DataContext>
+        <vm:GlobalCommandViewModel/>
+    </Design.DataContext>
+
+    <StackPanel Margin="10">
+        <RadioButton Name="SetNull" IsChecked="{Binding SetNull}" Content="No global command" GroupName="GlobalCommand"/>
+        <RadioButton Name="SetBreak" IsChecked="{Binding SetBreak}" Content="Break after each commit" GroupName="GlobalCommand"/>
+        <RadioButton Name="SetExec" IsChecked="{Binding SetExec}" Content="Exec after each commit" GroupName="GlobalCommand"/>
+        <Grid ColumnDefinitions="40,*">
+            <TextBox Grid.Row="0" Grid.Column="1" MinWidth="200" HorizontalAlignment="Left"
+                     Watermark="Enter script to exec" Text="{Binding ExecCommand}"
+                     IsEnabled="{Binding IsChecked, ElementName=SetExec}"/>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 10, 0, 0">
+            <Button Content="Cancel" Click="Cancel"/>
+            <Button Content="Save" Click="Save"/>
+        </StackPanel>
+    </StackPanel>
+
+</Window>
