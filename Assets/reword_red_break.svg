@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 2363 2363" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(2.922,2.4962e-17,4.51901e-18,0.565885,-2267.31,1917.34)">
+        <path d="M1277.69,3.658C1206.8,133.684 1142.38,120.008 1082.94,3.221L1082.94,786.138L1277.69,786.138L1277.69,3.658Z"/>
+    </g>
+    <g transform="matrix(2.922,-2.4962e-17,4.51901e-18,-0.565885,-2267.31,444.864)">
+        <path d="M1277.69,3.658C1206.8,133.684 1142.38,120.008 1082.94,3.221L1082.94,786.138L1277.69,786.138L1277.69,3.658Z"/>
+    </g>
+    <g transform="matrix(1.94596,0,0,1.94596,-1116.76,-1117.27)">
+        <g id="Commits">
+            <path id="Commit-red" serif:id="Commit red" d="M1181.1,786.138C1399.09,786.138 1576.07,963.116 1576.07,1181.1C1576.07,1399.09 1399.09,1576.07 1181.1,1576.07C963.116,1576.07 786.138,1399.09 786.138,1181.1C786.138,963.116 963.116,786.138 1181.1,786.138ZM1181.1,983.62C1290.1,983.62 1378.58,1072.11 1378.58,1181.1C1378.58,1290.1 1290.1,1378.58 1181.1,1378.58C1072.11,1378.58 983.62,1290.1 983.62,1181.1C983.62,1072.11 1072.11,983.62 1181.1,983.62Z" style="fill:rgb(242,13,13);stroke:black;stroke-width:32.12px;"/>
+        </g>
+    </g>
+    <g id="Reword" transform="matrix(4.06765,0,0,4.06765,-5533.61,-1796.88)">
+        <g transform="matrix(0.706669,0.707544,-0.641977,0.641184,1033.43,-949.985)">
+            <path d="M1662.6,925.781C1662.72,925.568 1662.78,925.322 1662.78,925.072L1662.78,723.158L1590.93,723.158L1590.93,925.079C1590.93,925.325 1590.99,925.566 1591.11,925.777C1593.51,930.182 1619.83,978.444 1625.42,988.705C1625.64,989.11 1626.04,989.359 1626.47,989.362C1626.9,989.364 1627.3,989.119 1627.52,988.716C1633.23,978.482 1660.13,930.214 1662.6,925.781Z" style="fill:rgb(255,212,0);stroke:black;stroke-width:10.73px;stroke-linecap:butt;"/>
+        </g>
+        <g transform="matrix(0.245842,0,0,0.245842,1360.39,441.748)">
+            <path d="M826.463,1331.37L1033,1538.16L760.291,1601.81L826.463,1331.37Z" style="fill:rgb(241,180,96);stroke:black;stroke-width:41.67px;stroke-linecap:butt;"/>
+        </g>
+        <g transform="matrix(0.0915191,0,0,0.0915191,1477.72,688.945)">
+            <path d="M826.463,1331.37L1033,1538.16L760.291,1601.81L826.463,1331.37Z" style="stroke:black;stroke-width:111.93px;stroke-linecap:butt;"/>
+        </g>
+        <g transform="matrix(1.2705,1.25021,-1.14037,1.15888,323.262,-2174.88)">
+            <path d="M1695.66,615.424C1695.66,614.335 1695.27,613.29 1694.56,612.52C1693.86,611.75 1692.91,611.317 1691.91,611.317L1659.05,611.317C1658.06,611.317 1657.1,611.75 1656.4,612.52C1655.7,613.29 1655.3,614.335 1655.3,615.424L1655.3,642.39L1695.66,642.39L1695.66,615.424Z" style="fill:rgb(254,110,205);stroke:black;stroke-width:6px;stroke-linecap:butt;"/>
+        </g>
+    </g>
+    <g id="Break-Flag" serif:id="Break Flag" transform="matrix(1.28156,0,0,1.28156,576.708,-1099.36)">
+        <g transform="matrix(0.934919,0,0,0.934919,85.2921,76.8671)">
+            <path d="M1328.69,1419.85C1335.62,1322.63 1301.39,1241.12 1233.92,1181.1C1301.39,1121.09 1335.62,1039.58 1328.69,942.36L1013.81,942.36C1006.87,1039.58 1041.11,1121.09 1108.57,1181.1C1041.11,1241.12 1006.87,1322.63 1013.81,1419.85L1328.69,1419.85Z" style="fill:url(#_Linear1);stroke:black;stroke-width:52.16px;stroke-linecap:butt;"/>
+        </g>
+        <g transform="matrix(2.99988,0,0,0.934919,-1970.68,88.3355)">
+            <path d="M1108.96,907.638L991.788,907.638L1108.96,907.638Z" style="stroke:black;stroke-width:21.95px;stroke-linecap:butt;"/>
+        </g>
+        <g transform="matrix(2.99988,0,0,0.934919,-1970.68,576.335)">
+            <path d="M1108.96,907.638L991.788,907.638L1108.96,907.638Z" style="stroke:black;stroke-width:21.95px;stroke-linecap:butt;"/>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.843341,449.367,-677.623,1.27171,1171.25,942.36)"><stop offset="0" style="stop-color:white;stop-opacity:1"/><stop offset="0" style="stop-color:rgb(0,255,255);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(23,0,255);stop-opacity:1"/></linearGradient>
+    </defs>
+</svg>
