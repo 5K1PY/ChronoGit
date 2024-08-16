@@ -10,12 +10,9 @@ using System.Collections.Specialized;
 namespace ChronoGit.Views;
 
 public record struct KeyCombination(bool ShiftPressed, bool CtrlPressed, Key Key) {
-    public static KeyCombination ImportFromString(string s) {
+    public static KeyCombination FromString(string s) {
         var parts = s.Split("+");
-        return new(parts.Contains("Shift"), parts.Contains("Ctrl"), (Key) int.Parse(parts.Last()));
-    }
-    public string ExportToString() {
-        return  (ShiftPressed ? "Shift+" : "") + (CtrlPressed ? "Ctrl+" : "") + ((int) Key).ToString();
+        return new(parts.Contains("Shift"), parts.Contains("Ctrl"), Enum.Parse<Key>(parts.Last()));
     }
     public override string ToString() {
         return (ShiftPressed ? "Shift+" : "") + (CtrlPressed ? "Ctrl+" : "") + Key.ToString();
@@ -166,7 +163,7 @@ public class KeyboardControls {
     public Dictionary<string, string> GetConfiguration() {
         Dictionary<string, string> res = [];
         foreach (var (key, action) in actions) {
-            res[action.Name] = key.ExportToString();
+            res[action.Name] = key.ToString();
         }
         return res;
     }
@@ -176,7 +173,7 @@ public class KeyboardControls {
         foreach (var (key, action) in actions) {
         string? value = configuration.Get(action.Name);
             if (value is not null) {
-                newActions[KeyCombination.ImportFromString(value)] = action;
+                newActions[KeyCombination.FromString(value)] = action;
             } else {
                 newActions[key] = action;
             }
