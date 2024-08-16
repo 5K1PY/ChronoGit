@@ -4,10 +4,19 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using Avalonia.Input;
 using ChronoGit.ViewModels;
+using System.Linq;
+using System.Collections.Specialized;
 
 namespace ChronoGit.Views;
 
 public record struct KeyCombination(bool ShiftPressed, bool CtrlPressed, Key Key) {
+    public static KeyCombination ImportFromString(string s) {
+        var parts = s.Split("+");
+        return new(parts.Contains("Shift"), parts.Contains("Ctrl"), (Key) int.Parse(parts.Last()));
+    }
+    public string ExportToString() {
+        return  (ShiftPressed ? "Shift+" : "") + (CtrlPressed ? "Ctrl+" : "") + ((int) Key).ToString();
+    }
     public override string ToString() {
         return (ShiftPressed ? "Shift+" : "") + (CtrlPressed ? "Ctrl+" : "") + Key.ToString();
     }
@@ -69,7 +78,7 @@ public static class ActionDescriptions {
 }
 
 public class KeyboardControls {
-    private readonly Dictionary<KeyCombination, NamedAction> actions;
+    private Dictionary<KeyCombination, NamedAction> actions;
     private static readonly ImmutableArray<string> actionOrder = [
         ActionDescriptions.COMMIT_DETAILS,
         ActionDescriptions.NORMAL_MODE,
@@ -152,6 +161,27 @@ public class KeyboardControls {
             new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_AUTHOR,  ActionType.Color,          dataContext.ColorByAuthor),       new KeyCombination(false, true,  Key.A)), 
             new BoundAction(new NamedAction(ActionDescriptions.COLOR_BY_DATE,    ActionType.Color,          dataContext.ColorByDate),         new KeyCombination(false, true,  Key.D)), 
         });
+    }
+    
+    public Dictionary<string, string> GetConfiguration() {
+        Dictionary<string, string> res = [];
+        foreach (var (key, action) in actions) {
+            res[action.Name] = key.ExportToString();
+        }
+        return res;
+    }
+
+    public void ImportConfiguration(NameValueCollection configuration) {
+        Dictionary<KeyCombination, NamedAction> newActions = [];
+        foreach (var (key, action) in actions) {
+        string? value = configuration.Get(action.Name);
+            if (value is not null) {
+                newActions[KeyCombination.ImportFromString(value)] = action;
+            } else {
+                newActions[key] = action;
+            }
+        }
+        actions = newActions;
     }
 
     public List<BoundAction> Export() {

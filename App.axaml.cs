@@ -19,7 +19,7 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(desktop.Args![0]),
+                DataContext = new MainWindowViewModel("/home/skipy/dev/pisek/.git/rebase-merge/git-rebase-todo")// desktop.Args![0]),
             };
         }
 

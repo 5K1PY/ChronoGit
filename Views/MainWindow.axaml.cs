@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -22,6 +23,7 @@ public sealed partial class MainWindow : WindowBase {
         base.OnOpened(e);
         dataContext = (DataContext as MainWindowViewModel)!;
         controls = KeyboardControls.Default(dataContext);
+        ImportConfiguration();
     }
 
     private ViewData GetViewData() {
@@ -80,8 +82,22 @@ public sealed partial class MainWindow : WindowBase {
         }
     }
 
+    private void ImportConfiguration() {
+        controls!.ImportConfiguration(ConfigurationManager.AppSettings);
+    }
+
     private void SaveConfiguration() {
-        // TODO
+        var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);  
+        var settings = configFile.AppSettings.Settings;
+        foreach (var (key, val) in controls!.GetConfiguration()) {
+            if (settings[key] == null) {
+                settings.Add(key, val);
+            } else {
+                settings[key].Value = val;
+            }
+        }
+        configFile.Save(ConfigurationSaveMode.Modified);  
+        ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);  
     }
 
     private async void RemapControls(object sender, RoutedEventArgs e) {
