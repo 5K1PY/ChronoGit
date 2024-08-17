@@ -1,6 +1,6 @@
 # ChronoGit
 
-Visual [sequence editor](https://git-scm.com/docs/git-config#git-config-sequenceeditor) for interactive rebasing.
+Visual [sequence editor](https://git-scm.com/docs/git-config#Documentation/git-config.txt-sequenceeditor) for interactive rebasing.
 
 ![](chronogit.png)
 
@@ -12,7 +12,8 @@ Visual [sequence editor](https://git-scm.com/docs/git-config#git-config-sequence
 * [Controls](#Controls)
 
 ## Installation
-TODO
+
+Head out to the releases tab ➡️ and grab an executable that suits your system.
 
 ## Setup
 
@@ -62,7 +63,7 @@ Use **Abort** to discard current work. Use **Finish** to rebase.
 
 Commit details window can be toggled with `Ctrl+C`.
 
-### Coloring
+### Coloring commits
 
 You can change color of commits in the **Commit colors** window.
 You can color commits:
