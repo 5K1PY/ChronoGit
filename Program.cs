@@ -20,6 +20,7 @@ sealed class Program
 
             return;
         }
+
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 

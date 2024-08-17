@@ -20,6 +20,7 @@
     </Design.DataContext>
 
     <Window.Resources>
+        <vm:IntPlusOneConverter x:Key="IntPlusOneConverter"/>
         <vm:BoolPlusOneConverter x:Key="BoolPlusOneConverter"/>
     </Window.Resources>
  
@@ -49,7 +50,7 @@
         <Border Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="10, *, Auto, 10">
                 <TextBlock Grid.Column="1" Text="{Binding VimMode}" FontSize="16"/>
-                <TextBlock Grid.Column="2" Text="{Binding CurrentPosition}" FontSize="16"/>
+                <TextBlock Grid.Column="2" Text="{Binding CurrentPosition, Converter={StaticResource IntPlusOneConverter}}" FontSize="16"/>
             </Grid>
         </Border>
 
