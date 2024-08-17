@@ -5,9 +5,9 @@ using System;
 
 namespace ChronoGit.Models;
 
-public class Repo(string todoListFilePath) : IDisposable {
+public class GitTodoList(string todoListFilePath) : IDisposable {
     private string todoListFilePath = todoListFilePath;
-    public Repository repo { get; init;} = new(Repository.Discover(todoListFilePath));
+    public Repository repo { get; init; } = new(Repository.Discover(todoListFilePath));
 
     public IEnumerable<PickCommand> GetCommits() {
         List<PickCommand> actions = [];

@@ -37,4 +37,3 @@ public class GlobalCommandViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _execCommand, value);
     }
 }
-

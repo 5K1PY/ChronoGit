@@ -23,7 +23,7 @@ public enum ViewMode {
 };
 
 public sealed class MainWindowViewModel : ViewModelBase {
-    private Repo Repo { get; init; }
+    private GitTodoList Repo { get; init; }
     private ObservableCollection<CommandViewModel> _commands;
     public ObservableCollection<CommandViewModel> Commands {
         get => _commands;
@@ -50,7 +50,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
     public CommitColor DefaultCommitColor = CommitColor.Red;
     public MainWindowViewModel(string filePath) {
-        Repo = new Repo(filePath);
+        Repo = new GitTodoList(filePath);
         var commits = Repo.GetCommits();
 
         _commands = new ObservableCollection<CommandViewModel>();
