@@ -8,7 +8,7 @@
         Width="400" Height="200"
         x:Class="ChronoGit.Views.GlobalCommandWindow"
         x:DataType="vm:GlobalCommandViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/ChronoGit.ico"
         Title="ChronoGit - Global command"
         KeyDown="WindowKeyDown"
         KeyUp="WindowKeyUp">

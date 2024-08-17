@@ -8,7 +8,7 @@
         Width="400" Height="650"
         x:Class="ChronoGit.Views.RemapControlsWindow"
         x:DataType="vm:RemapControlsViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/ChronoGit.ico"
         Title="ChronoGit - Remap controls"
         KeyDown="WindowKeyDown"
         KeyUp="WindowKeyUp">
