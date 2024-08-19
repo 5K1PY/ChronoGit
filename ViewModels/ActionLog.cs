@@ -13,7 +13,7 @@ public static class ObservableCollectionExtensions {
         }
         return result;
     }
-};
+}
 
 public abstract class ActionLog {
     public abstract int? PositionBefore { get; protected init; }
@@ -21,7 +21,7 @@ public abstract class ActionLog {
     public abstract Action<MainWindowViewModel> Change { get; protected init; }
     public abstract Action<MainWindowViewModel> UndoChange { get; protected init; }
     public abstract bool ChangesAnything { get; protected init; }
-};
+}
 
 public sealed class ReplaceRangeLog : ActionLog {
     public override int? PositionBefore { get; protected init; }
