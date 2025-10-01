@@ -106,25 +106,19 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
         }
     }
     public virtual string IconPath => $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
+    public virtual bool HasExec => false;
+    public virtual bool HasBreak => false;
 }
 
 public abstract partial class CommittingCommandViewModel : CommitCommandViewModel {
     protected internal CommittingCommand CommittingCommand => (CommittingCommand) Command;
-    public override string IconPath {
-        get {
-            string text = $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}";
-            if (CommittingCommand.GlobalCommand is ExecCommand) {
-                text += "_exec";
-            } else if (CommittingCommand.GlobalCommand is BreakCommand) {
-                text += "_break";
-            }
-            return $"{text}.svg";
-        }
-    }
+    public override bool HasExec => CommittingCommand.GlobalCommand is ExecCommand;
+    public override bool HasBreak => CommittingCommand.GlobalCommand is BreakCommand;
     public void SetGlobalCommand(Command? globalCommand) {
         if (globalCommand != CommittingCommand.GlobalCommand) {
             CommittingCommand.GlobalCommand = globalCommand;
-            this.RaisePropertyChanged(nameof(IconPath));
+            this.RaisePropertyChanged(nameof(HasExec));
+            this.RaisePropertyChanged(nameof(HasBreak));
         }
     }
 }

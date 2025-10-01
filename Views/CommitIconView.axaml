@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChronoGit.ViewModels"
+             x:Class="ChronoGit.Views.CommitIconView"
+             x:DataType="vm:CommitCommandViewModel"
+             Height="60">
+    <Grid>
+        <Svg Path="{Binding IconPath}"/>
+        <Svg Path="/Assets/addon_exec.svg" IsVisible="{Binding HasExec}"/>
+        <Svg Path="/Assets/addon_break.svg" IsVisible="{Binding HasBreak}"/>
+    </Grid>
+</UserControl>
