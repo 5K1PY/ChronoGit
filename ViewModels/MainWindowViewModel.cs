@@ -78,7 +78,6 @@ public sealed class MainWindowViewModel : ViewModelBase {
     public bool ShowCommitDetails => ViewMode == ViewMode.CommitDetails;
 
     public void ToggleCommitDetails(ViewData _) {
-        Console.WriteLine("here");
         ViewMode = ViewMode == ViewMode.CommitDetails ? ViewMode.JustCommands : ViewMode.CommitDetails;
     }
 
