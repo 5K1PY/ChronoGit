@@ -45,8 +45,8 @@
             <ItemsControl Name="CommandsView" ItemsSource="{Binding Commands}">
             </ItemsControl>
         </ScrollViewer>
-        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Text="No commands left." IsVisible="{Binding CommandsEmpty}"/>
+        <TextBlock Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="{Binding !SplitView, Converter={StaticResource BoolPlusOneConverter}}"
+            HorizontalAlignment="Center" VerticalAlignment="Center" Text="No commands left." IsVisible="{Binding CommandsEmpty}"/>
         <Border Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="10, *, Auto, 10">
                 <TextBlock Grid.Column="1" Text="{Binding VimMode}" FontSize="16"/>
