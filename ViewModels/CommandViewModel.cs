@@ -80,6 +80,18 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
         return dateTimeOffset.ToString("ddd dd MMM HH:mm:ss yyyy K", CultureInfo.InvariantCulture);
     }}
 
+    private List<string>? _filesChanged;
+    public List<string> FilesChanged {
+        get {
+            if (_filesChanged is not null) return _filesChanged;
+            Commit commit = CommitCommand.CommandCommit;
+            Commit parentCommit = commit.Parents.First();
+            var changes = Repository.Diff.Compare<TreeChanges>(parentCommit.Tree, commit.Tree);
+            _filesChanged = changes.Select(c => c.Path).ToList();
+            return _filesChanged;
+        }
+    }
+
     public List<FileChangeViewModel> CommitChanges {
         get {
             Commit commit = CommitCommand.CommandCommit;
@@ -105,6 +117,12 @@ public abstract partial class CommitCommandViewModel : CommandViewModel {
         }
     }
     public virtual string IconPath => $"/Assets/{IconFilePrefix}_{Color.ToString().ToLower()}.svg";
+
+    private bool _changed_selection = false;
+    public bool ChangedSelection {
+        get => _changed_selection;
+        set => this.RaiseAndSetIfChanged(ref _changed_selection, value);
+    }
     public virtual bool HasExec => false;
     public virtual bool HasBreak => false;
 }

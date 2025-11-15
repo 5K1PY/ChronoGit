@@ -212,6 +212,24 @@ public sealed class MainWindowViewModel : ViewModelBase {
         CurrentPosition = targetPosition;
     }
 
+    public void UpdateChangedSelection(ViewData viewData)
+    {
+        HashSet<string> changed_files = [];
+        foreach (int i in SelectedRange()) {
+            if (Commands[i] is CommitCommandViewModel ccvm)
+                changed_files.UnionWith(ccvm.FilesChanged);
+        }
+
+        for (int i=0; i<Commands.Count; i++) {
+            if (!(CurrentPosition - viewData.CommandsPerPage <= i && i <= CurrentPosition + viewData.CommandsPerPage))
+                continue;
+
+            if (Commands[i] is CommitCommandViewModel ccvm) {
+                ccvm.ChangedSelection = changed_files.Intersect(ccvm.FilesChanged).Any();
+            }
+        }
+    }
+
     public void MoveUp(ViewData _) {
         MovePositionTo(CurrentPosition - 1);
     }

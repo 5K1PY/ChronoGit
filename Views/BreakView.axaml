@@ -9,10 +9,10 @@
         <vm:SelectionToColorConverter x:Key="SelectionToColorConverter"/>
     </UserControl.Resources>
 
-    <Grid RowDefinitions="60" ColumnDefinitions="60,*"
+    <Grid RowDefinitions="60" ColumnDefinitions="5,60,*"
           Background="{Binding Selected, Converter={StaticResource SelectionToColorConverter}}">
 
-        <Svg Height="60" HorizontalAlignment="Left" Path="/Assets/break.svg"/>
+        <Svg Grid.Column="1" Height="60" HorizontalAlignment="Left" Path="/Assets/break.svg"/>
     </Grid>
 
 </UserControl>

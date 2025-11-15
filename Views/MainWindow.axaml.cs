@@ -27,6 +27,7 @@ public sealed partial class MainWindow : WindowBase {
         dataContext = (DataContext as MainWindowViewModel)!;
         controls = KeyboardControls.Default(dataContext);
         ImportConfiguration();
+        dataContext.UpdateChangedSelection(GetViewData());
     }
 
     private ViewData GetViewData() {
@@ -55,9 +56,9 @@ public sealed partial class MainWindow : WindowBase {
         double height = ScrollCommands.Bounds.Height;
         int commandsPerPage = (int) (height / ITEM_HEIGHT);
         double y_offset = ScrollCommands.Offset.Y;
-        double top_position = dataContext!.SelectedStart() * ITEM_HEIGHT;
-        double bot_position = dataContext!.SelectedEnd() * ITEM_HEIGHT;
-        double position = dataContext!.CurrentPosition * ITEM_HEIGHT;
+        double top_position = dataContext.SelectedStart() * ITEM_HEIGHT;
+        double bot_position = dataContext.SelectedEnd() * ITEM_HEIGHT;
+        double position = dataContext.CurrentPosition * ITEM_HEIGHT;
 
         if (action?.ActionType == ActionType.ShiftUp) {
             y_offset = Math.Min(y_offset, top_position - ITEM_HEIGHT);
@@ -74,6 +75,8 @@ public sealed partial class MainWindow : WindowBase {
         } else {
             ScrollCommands.Offset = new Vector(ScrollCommands.Offset.X, y_offset);
         }
+
+        dataContext.UpdateChangedSelection(GetViewData());
 
         Control? control = CommandsView.ContainerFromIndex(dataContext!.CurrentPosition);
         control?.UpdateLayout(); // FindDescendant doesn't work on not yet updated
