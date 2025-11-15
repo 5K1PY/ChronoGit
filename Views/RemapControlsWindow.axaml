@@ -5,7 +5,7 @@
         xmlns:m="using:ChronoGit.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Width="400" Height="650"
+        MinWidth="400" MinHeight="650"
         x:Class="ChronoGit.Views.RemapControlsWindow"
         x:DataType="vm:RemapControlsViewModel"
         Icon="/Assets/ChronoGit.ico"
