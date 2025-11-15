@@ -18,6 +18,8 @@ public sealed partial class MainWindow : WindowBase {
 
     public MainWindow() {
         InitializeComponent();
+        AddHandler(KeyDownEvent, WindowKeyDown, handledEventsToo: true);
+        AddHandler(KeyUpEvent, WindowKeyUp, handledEventsToo: true);
     }
 
     protected override void OnOpened(EventArgs e) {
@@ -31,7 +33,7 @@ public sealed partial class MainWindow : WindowBase {
         return new ViewData((int) (ScrollCommands.Bounds.Height / ITEM_HEIGHT));
     }
 
-    protected override void WindowKeyDown(object sender, KeyEventArgs e) {
+    protected override void WindowKeyDown(object? sender, KeyEventArgs e) {
         base.WindowKeyDown(sender, e);
 
         KeyCombination currentKeyCombination = GetCurrentKeyCombination(e.Key);

@@ -39,13 +39,13 @@ public partial class WindowBase : Window {
         );
     }
 
-    protected virtual void WindowKeyDown(object sender, KeyEventArgs e) {
+    protected virtual void WindowKeyDown(object? sender, KeyEventArgs e) {
         if (ModifiersPressed.ContainsKey(e.Key)) {
             ModifiersPressed[e.Key] = true;
         }
     }
 
-    protected virtual void WindowKeyUp(object sender, KeyEventArgs e) {
+    protected virtual void WindowKeyUp(object? sender, KeyEventArgs e) {
         if (ModifiersPressed.ContainsKey(e.Key)) {
             ModifiersPressed[e.Key] = false;
         }

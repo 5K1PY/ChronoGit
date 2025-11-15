@@ -166,6 +166,10 @@ public sealed class MainWindowViewModel : ViewModelBase {
     }
 
     public void ExitCurrentMode(ViewData _) {
+        ArgumentCommandViewModel? acvm = Commands[CurrentPosition] as ArgumentCommandViewModel;
+        if (acvm is not null) {
+            acvm.Focused = false;
+        }
         NormalMode();
     }
 
@@ -183,6 +187,7 @@ public sealed class MainWindowViewModel : ViewModelBase {
 
         ArgumentCommandViewModel? acvm = Commands[CurrentPosition] as ArgumentCommandViewModel;
         if (acvm is not null) {
+            acvm.Focused = true;
             VimMode = VimMode.InsertMode;
             BeforeInsertModeArgument = acvm.Argument;
         }

@@ -33,7 +33,6 @@ public abstract partial class CommandViewModel : ViewModelBase {
         if (cvm1 is null) return cvm2 is null;
         return cvm1.Equals(cvm2);
     }
-
     public static bool operator!=(CommandViewModel? cvm1, CommandViewModel? cvm2) {
         if (cvm1 is null) return !(cvm2 is null);
         return !cvm1.Equals(cvm2);
@@ -124,6 +123,12 @@ public abstract partial class CommittingCommandViewModel : CommitCommandViewMode
 }
 
 public abstract partial class ArgumentCommandViewModel : CommandViewModel {
+    private bool _focused = false;
+    public bool Focused {
+        get => _focused;
+        set => this.RaiseAndSetIfChanged(ref _focused, value);
+    }
+
     protected internal ArgumentCommand ArgumentCommand => (ArgumentCommand) Command;
     public string Argument {
         get => ArgumentCommand.Argument;

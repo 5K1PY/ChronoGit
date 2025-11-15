@@ -9,6 +9,8 @@ namespace ChronoGit.Views;
 public sealed partial class RemapControlsWindow : WindowBase {
     public RemapControlsWindow() {
         InitializeComponent();
+        AddHandler(KeyDownEvent, WindowKeyDown, handledEventsToo: true);
+        AddHandler(KeyUpEvent, WindowKeyUp, handledEventsToo: true);
     }
 
     protected override void OnOpened(EventArgs e) {
@@ -37,7 +39,7 @@ public sealed partial class RemapControlsWindow : WindowBase {
         Close(new KeyboardControls(dataContext!.Controls));
     }
 
-    protected override void WindowKeyDown(object sender, KeyEventArgs e) {
+    protected override void WindowKeyDown(object? sender, KeyEventArgs e) {
         base.WindowKeyDown(sender, e);
         if (remappingPosition != null && !ModifiersPressed.ContainsKey(e.Key)) {
             KeyCombination keyComb = GetCurrentKeyCombination(e.Key);

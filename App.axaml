@@ -10,5 +10,11 @@
   
     <Application.Styles>
         <FluentTheme />
+
+        <Style Selector="TextBox:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
+            <Setter Property="Opacity" Value="0.95" />
+        </Style>
     </Application.Styles>
 </Application>

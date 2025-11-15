@@ -9,9 +9,7 @@
         x:Class="ChronoGit.Views.RemapControlsWindow"
         x:DataType="vm:RemapControlsViewModel"
         Icon="/Assets/ChronoGit.ico"
-        Title="ChronoGit - Remap controls"
-        KeyDown="WindowKeyDown"
-        KeyUp="WindowKeyUp">
+        Title="ChronoGit - Remap controls">
 
     <Design.DataContext>
         <vm:RemapControlsViewModel/>
