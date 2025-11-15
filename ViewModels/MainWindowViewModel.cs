@@ -23,6 +23,15 @@ public enum ViewMode {
 };
 
 public sealed class MainWindowViewModel : ViewModelBase {
+    private double _zoom = 1.0;
+    public double Zoom
+    {
+        get => _zoom;
+        set => this.RaiseAndSetIfChanged(ref _zoom, value);
+    }
+    public void ZoomIn(ViewData _) => Zoom += 0.1;
+    public void ZoomOut(ViewData _) => Zoom -= 0.1;
+
     private GitTodoList Repo { get; init; }
     private ObservableCollection<CommandViewModel> _commands;
     public ObservableCollection<CommandViewModel> Commands {
